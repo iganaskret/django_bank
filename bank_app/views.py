@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from .models import Customer
+from .models import Account
 
 
 def index(request):
-   customer = Customer.objects.all()
+   customer = Account.objects.all()
    context = {
       'customer': customer
    }

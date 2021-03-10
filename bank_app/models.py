@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Q
+from django.db.models import Sum
 
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True,)
@@ -29,21 +31,30 @@ class Account(models.Model):
     account_type = models.CharField(choices=AccountType.choices, default=AccountType.BANK_ACCOUNT, max_length=200)
     name=models.CharField(max_length=20)
     #num_mentions=models.Count('ledger')
-    #@property
-    #def balance(self):
+    @property
+    def balance(self):
         #sum aggregate of the ledger
-    #    Account.objects.annotate(num_mentions=models.Count('ledger')).all()
-        #for p in ps:
-    #    return self.num_mentions
+        # filter mentions in the ledger and then aggregate(Sum()) them
+        #BUT HOW???? HOW DO WE ACCESS AMOUNTS FROM THE LEDGER HERE????
+        ps=Account.objects.annotate(num_mentions=models.Count('ledger')).all()
+        for p in ps:
+            if p.id == self.id:
+                return p.id, p.num_mentions
+
+        return ledger.amount
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.id}"
 
 class Ledger(models.Model):
    #transaction_id
-   id_account_fk=models.ForeignKey('Account',on_delete=models.CASCADE)
+   id_account_fk=models.ForeignKey('Account',on_delete=models.CASCADE, related_name="ledger")
    amount=models.DecimalField(max_digits=20, decimal_places=2)
    text=models.CharField(max_length=20)
    date_created=models.DateTimeField(auto_now_add=True)
+  # @property
+  # def total_amount(self):
+    #   calc=Ledger.objects.annotate(total_amount=Sum('amount'))
+   #    return self.calc
    def __str__(self):
-       return f"{self.text}"
+       return f"{self.calc}"

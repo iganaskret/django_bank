@@ -1,11 +1,13 @@
 from django.shortcuts import render
-from .models import Account
+from .models import Account, Ledger, Customer
 
 
 def index(request):
-   customer = Account.objects.all()
+   customers = Customer.objects.all()
+   accounts = Account.objects.all()
    context = {
-      'customer': customer
+      'customers': customers,
+      'accounts': accounts
    }
    return render(request, 'bank_app/index.html', context)
 

@@ -9,8 +9,8 @@
    <h1>Bank</h1>
    <hr />
    <ul>
-      {% for customer in customer  %}
-      <li>{{ customer }}</li>
+       {% for account in accounts  %}
+      <li>{{ account.balance }}</li>
       {% endfor  %}
    </ul>
    <hr />

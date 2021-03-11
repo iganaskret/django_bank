@@ -36,12 +36,14 @@ class Account(models.Model):
         #sum aggregate of the ledger
         # filter mentions in the ledger and then aggregate(Sum()) them
         #BUT HOW???? HOW DO WE ACCESS AMOUNTS FROM THE LEDGER HERE????
+        test = Ledger.objects.filter(id_account_fk=self.id)
+        test2 = Ledger.objects.filter(id_account_fk=self.id).aggregate(Sum('amount'))
         ps=Account.objects.annotate(num_mentions=models.Count('ledger')).all()
         for p in ps:
             if p.id == self.id:
-                return p.id, p.num_mentions
+                return p.id, p.num_mentions, test, test2
 
-        return ledger.amount
+        #return ledger.amount
 
     def __str__(self):
         return f"{self.id}"
@@ -57,4 +59,4 @@ class Ledger(models.Model):
     #   calc=Ledger.objects.annotate(total_amount=Sum('amount'))
    #    return self.calc
    def __str__(self):
-       return f"{self.calc}"
+       return f"{self.amount}"

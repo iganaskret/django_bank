@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def index(request):
    customers = Customer.objects.filter(user=request.user)
+   print(customers)
    accounts = Account.objects.filter(user=request.user)
    context = {
       'customers': customers,

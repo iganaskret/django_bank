@@ -7,9 +7,12 @@
   </head>
   <body>
     <h1>BANK</h1>
+    {% for customer in customers %}
     <p>
-      Welcome {{ user }} - <a href="{% url 'login_app:logout' %}">Log out</a>
+      Welcome {{ customer.user.first_name }} - <a href="{% url 'login_app:logout' %}">Log out</a>
     </p>
+    <p> Your rank: {{ customer.rank }} </p>
+     {% endfor %}
     {% block content %} {% endblock %}
     {% block footer %} {% endblock %}
   </body>

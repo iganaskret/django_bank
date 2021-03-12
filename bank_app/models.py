@@ -18,7 +18,8 @@ class Customer(models.Model):
         else:
             return True
     def __str__(self):
-        return f"{self.user.first_name}"
+        return f"{self.user.first_name} - {self.rank}"
+
 
 class Account(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)

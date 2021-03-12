@@ -18,7 +18,7 @@ class Customer(models.Model):
         else:
             return True
     def __str__(self):
-        return f"{self.user.first_name} - {self.rank}"
+        return f"{self.user.first_name} - {self.user.id} - {self.rank}"
 
 
 class Account(models.Model):
@@ -38,7 +38,7 @@ class Account(models.Model):
             return  value
 
     def __str__(self):
-        return f"{self.id}"
+        return f"{self.name} - {self.id} - {self.user.id}"
 
 class Ledger(models.Model):
    #transaction_id
@@ -51,4 +51,4 @@ class Ledger(models.Model):
     #   calc=Ledger.objects.annotate(total_amount=Sum('amount'))
    #    return self.calc
    def __str__(self):
-       return f"{self.amount}"
+       return f"{self.id_account_fk} - {self.amount}"

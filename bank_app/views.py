@@ -34,3 +34,11 @@ def add_account(request):
 
     return render(request, 'bank_app/add_account.html', context)
 
+@login_required
+def movements(request, account_id):
+    movements = Ledger.objects.filter(id_account_fk=account_id)
+    print(movements)
+    context = {
+            'movements': movements
+    }
+    return render(request, 'bank_app/movements.html', context)

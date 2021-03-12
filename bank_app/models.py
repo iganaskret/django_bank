@@ -30,20 +30,11 @@ class Account(models.Model):
 
     account_type = models.CharField(choices=AccountType.choices, default=AccountType.BANK_ACCOUNT, max_length=200)
     name=models.CharField(max_length=20)
-    #num_mentions=models.Count('ledger')
     @property
     def balance(self):
-        #sum aggregate of the ledger
-        # filter mentions in the ledger and then aggregate(Sum()) them
-        #BUT HOW???? HOW DO WE ACCESS AMOUNTS FROM THE LEDGER HERE????
-        test = Ledger.objects.filter(id_account_fk=self.id)
-        test2 = Ledger.objects.filter(id_account_fk=self.id).aggregate(Sum('amount'))
-        ps=Account.objects.annotate(num_mentions=models.Count('ledger')).all()
-        for p in ps:
-            if p.id == self.id:
-                return p.id, p.num_mentions, test, test2
-
-        #return ledger.amount
+        ledger_sum = Ledger.objects.filter(id_account_fk=self.id).aggregate(Sum('amount'))
+        for key, value in ledger_sum.items():
+            return  value
 
     def __str__(self):
         return f"{self.id}"

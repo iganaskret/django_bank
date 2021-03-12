@@ -1,0 +1,15 @@
+{% extends 'bank_app/base.html' %} {% block content %}
+<h2>Add Account</h2>
+
+<form action={% url 'bank_app:add_account' %} method="POST">
+    {% csrf_token %}
+
+  <input type="hidden" name="user_id" value="{{ user.id }}" />
+  <input type="text" name="name" id="name" placeholder="account name"/>
+  <input type="hidden" name="account_type" id="account_type" value="BANK_ACCOUNT"/>
+  <button type="submit" style="display: block; margin-top: 20px">
+    add account
+  </button>
+</form>
+<a href={% url 'bank_app:index' %}>go back</a>
+{% endblock %}

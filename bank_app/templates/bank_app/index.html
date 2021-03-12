@@ -1,19 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Bank</title>
-</head>
-<body>
-   <h1>Bank</h1>
-   <hr />
+{% extends 'bank_app/base.html' %} {% block content %}
+<h2> Your accounts </h2>
    <ul>
-       {% for account in accounts  %}
-      <li>{{ account.balance }}</li>
-      {% endfor  %}
+    {% for account in accounts %}
+      <li>{{ account.name }}: {{ account.balance }} dkk</li>
+    {% endfor %}
    </ul>
-   <hr />
-   <a>It all ends here!</a>
-</body>
-</html>
+<a href={% url 'bank_app:add_account' %}>add account</a>
+{% endblock %}

@@ -3,8 +3,7 @@ from django.shortcuts import render, reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as dj_login, logout as dj_logout
 from django.http import HttpResponseRedirect
-#from . models import PasswordResetRequest
-#from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
 
 def login(request):
    context = {}
@@ -21,15 +20,10 @@ def login(request):
             }
    return render(request, 'login_app/login.html', context)
 
-
+@login_required
 def logout(request):
    dj_logout(request)
    return render(request, 'login_app/login.html')
-
-
-def password_reset(request):
-   pass
-
 
 def sign_up(request):
    context = {}
@@ -58,9 +52,3 @@ def sign_up(request):
             }
    return render(request, 'login_app/sign_up.html', context)
 
-
-
-def delete_account(request):
-   pass
-
-# Create your views here.

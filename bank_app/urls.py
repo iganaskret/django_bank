@@ -7,4 +7,5 @@ from . import views
 app_name = 'bank_app'
 urlpatterns = [
    path('', views.index, name='index'),
+   path('add_account', views.add_account, name='add_account'),
 ]

@@ -8,7 +8,7 @@
 <body>
    <h1>Sign Up</h1>
    <hr />
-   <form action="{% url 'login_app:sign_up' %}" method="POST">
+   <form action="{% url 'login_app:sign_up' %}" method="POST" autocomplete="off" >
       {% csrf_token %}
       <input type="text" name="first_name" placeholder="First Name">
       <input type="text" name="last_name" placeholder="Last Name">

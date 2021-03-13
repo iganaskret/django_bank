@@ -12,7 +12,16 @@
       Welcome {{ customer.user.first_name }} - <a href="{% url 'login_app:logout' %}">Log out</a>
     </p>
     <p> Your rank: {{ customer.rank }} </p>
-     {% endfor %}
+    <div class="loan__panel">
+        {% if customer.rank == 'basic' %}
+        <p>Sorry you can't take a loan yet</p>
+        <p style="opacity: 0.5; cursor: not-allowed;">LOAN</p>
+        {% else %}
+        <p>Click here to take a loan</p>
+        <a href="{% url 'bank_app:take_loan' %}">LOAN</a>
+        {% endif %}
+    </div>
+    {% endfor %}
     {% block content %} {% endblock %}
     {% block footer %} {% endblock %}
   </body>

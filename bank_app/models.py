@@ -38,7 +38,7 @@ class Account(models.Model):
             return  value
 
     def __str__(self):
-        return f"{self.name} - {self.id} - {self.user.id}"
+        return f"{self.name} - {self.id} - {self.user.id} - {self.balance}"
 
 class Ledger(models.Model):
    #transaction_id

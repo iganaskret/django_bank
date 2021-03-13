@@ -17,6 +17,27 @@ def index(request):
    print( loans, accounts)
    return render(request, 'bank_app/index.html', context)
 
+def employee(request):
+    customers = Customer.objects.all()
+    accounts = Account.objects.all()
+    context = {
+            'customers': customers,
+            'accounts': accounts
+    }
+    return render(request, 'bank_app/employee.html', context)
+
+def change_rank(request):
+    user_id = request.POST["id"]
+    user = Customer.objects.filter(user=request.user)
+    user.rank = request.POST["rank"]
+    #if request.POST['basic'] == "selected":
+    #    user.rank = 'basic'
+    #elif request.POST['silver'] == "selected":
+    #    todo.status = False
+    user.save()
+    return HttpResponseRedirect(reverse('bank_app:employee'))
+
+
 @login_required
 def add_account(request):
     accounts = Account.objects.filter(user=request.user)

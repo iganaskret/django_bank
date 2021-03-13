@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee</title>
+  </head>
+  <body>
+    <h1>Employee</h1>
+    <p>
+      Welcome employee
+    </p>
+  <h2>All accounts:</h2>
+  {% for account in accounts %}
+  <ol>
+    <li>
+      type:
+      <span
+        >{{ account.account_type }}</span
+      >
+      name:<span>{{ account.name }}</span>
+      username:<span>{{ account.user.username }}</span>
+      balance:<span>{{ account.balance }}</span>
+    </li>
+    <hr />
+  </ol>
+  {% endfor %}
+  <h2> All customers </h2>
+  <ol>
+  {% for customer in customers %}
+  <li>
+<form action="{% url 'bank_app:change_rank' %}" method="POST">
+                    {% csrf_token %}
+                    username:<span>{{ customer.user.username }}</span>
+                    <select name="rank" id="rank">
+                        <option value="basic" {% if customer.rank == "basic" %}selected{% endif %}>Basic</option>
+                         <option value="silver" {% if customer.rank == "silver" %}selected{% endif %}>Silver</option>
+                         <option value="gold" {% if customer.rank == "gold" %}selected{% endif %}>Gold</option>
+                         </select>
+                         <button>Update</button>
+                    <input type="hidden" name="id" value="{{ customer.user.id }}" />
+                </form>
+  </li>
+  {% endfor %}
+  </ol>
+  </body>
+</html>
+

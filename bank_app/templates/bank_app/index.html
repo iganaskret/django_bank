@@ -5,7 +5,7 @@
 
     <li>{{ account.name }}, {{ account.id }}: {{ account.balance }} dkk</li>
       <a href={% url 'bank_app:movements' account_id=account.id %}>see movements</a>
-
+<a href="{% url 'bank_app:transfers' account_id=account.id %}">Make a transfer</a>
     {% endfor %}
    </ul>
 {% if customer.rank != 'basic' %}
@@ -14,7 +14,7 @@
        {% for account in loans %}
 
        <li>{{ account.name }}, {{ account.id }}: {{ account.balance }} dkk
-<a href="{% url 'bank_app:transfers' account_id=account.id %}">Make a transfer</a>
+<a href="{% url 'bank_app:pay_loan' customer_id=user.id loan_id=account.id  %}">Pay loan</a>
        </li>
 
        {% endfor %}

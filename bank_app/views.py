@@ -116,11 +116,12 @@ def movements(request, account_id):
     return render(request, 'bank_app/movements.html', context)
 
 @login_required
-def take_loan(request):
-    accounts = Account.objects.filter(user=request.user)
-    customers = Customer.objects.filter(user=request.user)
+def take_loan(request, customer_id):
+    accounts = Account.objects.filter(user=request.user).filter(account_type='BANK_ACCOUNT')
+    customer = get_object_or_404(Customer, pk=customer_id)
     context = {
-            'accounts': accounts
+            'accounts': accounts,
+            'customer': customer
     }
     if request.method == 'POST':
         account_type = request.POST['account_type']
@@ -132,10 +133,29 @@ def take_loan(request):
         account.account_number = "12345678"
         account.account_type = account_type
         account.save()
+        loan_amount = request.POST['loan_amount']
+        from_account = account.pk
+        to_account = request.POST['toAccount']
+        text = "loan"
+        Ledger.transaction(int(loan_amount), from_account, to_account, text)
 
         return redirect('bank_app:index')
 
     return render(request, 'bank_app/take_loan.html', context)
+
+@login_required
+def pay_loan(request, customer_id, loan_id):
+    loan = get_object_or_404(Account, pk=loan_id)
+    customer = get_object_or_404(Customer, pk=customer_id)
+    accounts = Account.objects.filter(user=request.user).filter(account_type='BANK_ACCOUNT')
+    context = {
+            'accounts': accounts,
+            'customer': customer,
+            'loan': loan
+    }
+
+    return render(request, 'bank_app/pay_loan.html', context)
+
 
 @login_required
 def transfers(request, account_id):
@@ -152,8 +172,8 @@ def transfers(request, account_id):
         from_account = request.POST['fromAccount']
         to_account = request.POST['toAccount']
         text = request.POST['text']
-        #acc_balance = currentAccount.balance
-        acc_balance = 1000
+        acc_balance = currentAccount.balance
+        #acc_balance = 1000
         if acc_balance >= int(amount):
             Ledger.transaction(int(amount), from_account, to_account, text)
             return redirect('bank_app:index')

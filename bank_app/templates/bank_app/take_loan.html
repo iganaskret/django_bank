@@ -1,8 +1,16 @@
 {% extends 'bank_app/base.html' %} {% block content %}
 	<h2>Take a loan</h2>
-	<form action={% url 'bank_app:take_loan' %} method="POST">
+	<form action={% url 'bank_app:take_loan' customer_id=customer.pk %} method="POST">
 	{% csrf_token %}
 	<input type="hidden" name="user_id" value="{{ user.id }}" />
+    <label for="toAccount">Choose account:</label>
+    <select name="toAccount" id="toAccount">
+        {% for account in accounts %}
+        <option value={{ account.pk }}> {{ account.pk }} - {{ account.name }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="hidden" value={{ loan.pk }}>
 
 	<label for="loan_amount">Loan Amount</label>
 	<input type="number" id="loan_amount" name="loan_amount" min="1" max="1000">

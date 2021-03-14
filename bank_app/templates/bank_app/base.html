@@ -18,7 +18,7 @@
         <p style="opacity: 0.5; cursor: not-allowed;">LOAN</p>
         {% else %}
         <p>Click here to take a loan</p>
-        <a href="{% url 'bank_app:take_loan' %}">LOAN</a>
+        <a href="{% url 'bank_app:take_loan' customer_id=customer.pk  %}">LOAN</a>
         {% endif %}
     </div>
     {% endfor %}

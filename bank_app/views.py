@@ -154,6 +154,34 @@ def pay_loan(request, customer_id, loan_id):
             'loan': loan
     }
 
+    if request.method == 'POST':
+        account = request.POST['account']
+        amount = request.POST['amount']
+        text = 'loan payment'
+        selectedAccount = get_object_or_404(Account, pk=account)
+        balance = selectedAccount.balance
+
+        if balance >= int(amount) and int(amount) <= -loan.balance:
+            Ledger.transaction(int(amount), account, loan.pk, text)
+            if loan.balance == 0:
+                loan.delete()
+
+            return redirect('bank_app:index')
+        elif int(amount) > -loan.balance:
+            context = {
+                'customer': customer,
+                'accounts': accounts,
+                'loan': loan,
+                'error': 'your loan in smaller than the amount you are sending'
+            }
+        else:
+            context = {
+                'customer': customer,
+                'accounts': accounts,
+                'loan': loan,
+                'error': 'insufficient funds'
+            }
+
     return render(request, 'bank_app/pay_loan.html', context)
 
 

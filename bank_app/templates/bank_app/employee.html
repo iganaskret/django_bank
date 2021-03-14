@@ -29,9 +29,10 @@
   <ol>
   {% for customer in customers %}
   <li>
-<form action="{% url 'bank_app:change_rank' %}" method="POST">
+      username:<span>{{ customer.user.username }}</span>
+      id:<span>{{ customer.user.id }}</span>
+<form action="{% url 'bank_app:change_rank' customer_id=customer.pk  %}" method="POST">
                     {% csrf_token %}
-                    username:<span>{{ customer.user.username }}</span>
                     <select name="rank" id="rank">
                         <option value="basic" {% if customer.rank == "basic" %}selected{% endif %}>Basic</option>
                          <option value="silver" {% if customer.rank == "silver" %}selected{% endif %}>Silver</option>
@@ -43,6 +44,38 @@
   </li>
   {% endfor %}
   </ol>
+  <h2>Add a customer</h2>
+
+<form action={% url 'bank_app:add_customer' %} method="POST">
+    {% csrf_token %}
+     <input type="text" name="first_name" placeholder="First Name">
+     <input type="text" name="last_name" placeholder="Last Name">
+     <input type="email" name="email" placeholder="Email Address">
+     <input type="text" name="username" placeholder="Username">
+     <input type="tel" name="phone" placeholder="Phone">
+     <input type="password" name="password" placeholder="Password">
+     <input type="password" name="confirm_password" placeholder="Confirm Password">
+     <select name="rank" id="rank">
+         <option value="basic">Basic</option>
+         <option value="silver">Silver</option>
+         <option value="gold">Gold</option>
+         </select>
+         <button>Add a customer</button>
+</form>
+
+<h2>Add account </h2>
+
+<form action={% url 'bank_app:add_account_by_employee' %} method="POST">
+    {% csrf_token %}
+
+  <input type="text" name="user_id" placeholder="user id" />
+  <input type="text" name="name" id="name" placeholder="account name"/>
+  <input type="hidden" name="account_type" id="account_type" value="BANK_ACCOUNT"/>
+  <button type="submit" style="display: block; margin-top: 20px">
+    add account
+  </button>
+</form>
+
   </body>
 </html>
 

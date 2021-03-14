@@ -13,7 +13,9 @@
     <ul>
        {% for account in loans %}
 
-       <li>{{ account.name }}, {{ account.id }}: {{ account.balance }} dkk</li>
+       <li>{{ account.name }}, {{ account.id }}: {{ account.balance }} dkk
+<a href="{% url 'bank_app:transfers' account_id=account.id %}">Make a transfer</a>
+       </li>
 
        {% endfor %}
     </ul>

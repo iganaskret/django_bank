@@ -2,7 +2,7 @@
 <h2>Account movements:</h2>
 <ol>
   {% for movement in movements %}
-  <li>{{ movement.text }}</li>
+  <li>{{ movement.text }} : {{ movement.amount }}</li>
   <hr />
   {% endfor %}
 </ol>

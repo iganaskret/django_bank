@@ -60,6 +60,15 @@ def sign_up(request):
             context = {
                 'error': 'Passwords did not match. Please try again.'
             }
+
+        if user:
+            prr = ActivateAccountTokenRequest()
+            prr.user = user
+            prr.save()
+            django_rq.enqueue(email_message, {
+                'token': prr.token,
+                'email': prr.user.email,
+            })
     return render(request, 'login_app/sign_up.html', context)
 
 
@@ -79,15 +88,15 @@ def request_activate_account(request):
                 user = User.objects.get(email=post_user)
             except:
                 print(f"Invalid Activate Account Token Request: {post_user}")
-        if user:
-            prr = ActivateAccountTokenRequest()
-            prr.user = user
-            prr.save()
-            django_rq.enqueue(email_message, {
-                'token': prr.token,
-                'email': prr.user.email,
-            })
-            return HttpResponseRedirect(reverse('login_app:activate_account'))
+      #   if user:
+      #       prr = ActivateAccountTokenRequest()
+      #       prr.user = user
+      #       prr.save()
+      #       django_rq.enqueue(email_message, {
+      #           'token': prr.token,
+      #           'email': prr.user.email,
+      #       })
+        return HttpResponseRedirect(reverse('login_app:activate_account'))
 
     return render(request, 'login_app/activate_account.html')
 

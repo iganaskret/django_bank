@@ -39,7 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bank_app',
     'login_app',
+    'rest_framework',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSSION_CLASSES': [
+        'rest_framework.permisssions.AllowAny',
     ]
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -4,7 +4,7 @@ Group members:
 
 Iga Marianna Naskret, Codrina--Elena Acsinte, Ksawery Karczewski
 
-For Mandatory Assignment 1, we have designed and developed a banking system in Django.
+For Mandatory Assignment 1 + 2, we have designed and developed a banking system in Django.
 
 These are the requirements for our system:
 

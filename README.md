@@ -18,3 +18,5 @@ These are the requirements for our system:
 8. Bank employees can view all customers and accounts
 9. Bank employees can create new customers and accounts and change customer rank
 10. Use Python 3.7 or newer, Django 3.0 or newer
+
+11. REST

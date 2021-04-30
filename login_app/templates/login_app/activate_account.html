@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Activate Account</title>
+</head>
+
+<body>
+   <h1>Activate Page</h1>
+   <a href="{% url 'login_app:sign_up' %}">Sign Up</a>
+   <hr />
+   <form action="{% url 'login_app:activate_account' %}" method="POST">
+      {% csrf_token %}
+      <input type="text" name="token" placeholder="Token">
+      <button>Submit</button>
+   </form>
+   <hr />
+   {% if error %}
+   {{ error }}
+   {% endif %}
+</body>
+
+</html>

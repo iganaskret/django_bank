@@ -75,7 +75,14 @@ WSGI_APPLICATION = 'bank_project.wsgi.application'
 
 # Channels
 ASGI_APPLICATION = 'bank_project.asgi.application'
-#ASGI_APPLICATION = "routing.application"
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 
 # Database

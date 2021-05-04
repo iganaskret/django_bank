@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bank_app',
     'login_app',
-    ]
+    'channels',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

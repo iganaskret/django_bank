@@ -6,14 +6,32 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 
 # api
-from rest_framework import viewsets
-from .serializers import CustomerSerializer
-#from .models import Customer
+from rest_framework import viewsets, generics
+from .serializers import AccountSerializer, LedgerSerializer
 
 
-class CustomerViewSet(viewsets.ModelViewSet):
-    queryset = Customer.objects.all().order_by('rank')
-    serializer_class = CustomerSerializer
+class AccountList(generics.ListCreateAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+
+
+class AccountDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+
+
+class LedgerList(generics.ListCreateAPIView):
+    queryset = Ledger.objects.all()
+    serializer_class = LedgerSerializer
+
+
+class LedgerDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Ledger.objects.all()
+    serializer_class = LedgerSerializer
+
+# class CustomerViewSet(viewsets.ModelViewSet):
+#     queryset = Customer.objects.all().order_by('rank')
+#     serializer_class = CustomerSerializer
 
 
 @login_required

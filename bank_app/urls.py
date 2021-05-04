@@ -1,21 +1,28 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from rest_framework import routers
+#from rest_framework import routers
 
 from . import views
+from .views import AccountList, AccountDetail, LedgerList, LedgerDetail
 
-router = routers.DefaultRouter()
-router.register(r'customers', views.CustomerViewSet)
+#router = routers.DefaultRouter()
+#router.register(r'customers', views.CustomerViewSet)
 
 app_name = 'bank_app'
 urlpatterns = [
     # Wire up our API using automatic URL routing.
     # Additionally, we include login URLs for the browsable API.
-    path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    #path('', include(router.urls)),
+    #path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
-    path('', views.index, name='index'),
+    path('<int:pk>/', AccountDetail.as_view()),
+    path('', AccountList.as_view()),
+
+    path('ledger/<int:pk>/', LedgerDetail.as_view()),
+    path('ledger/', LedgerList.as_view()),
+
+    path('index', views.index, name='index'),
     path('pay_loan/<customer_id>/<loan_id>', views.pay_loan, name='pay_loan'),
     path('employee', views.employee, name='employee'),
     path('take_loan/<customer_id>', views.take_loan, name='take_loan'),

@@ -72,6 +72,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bank_project.wsgi.application'
 
+ASGI_APPLICATION = "bank_project.asgi.application"
+
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

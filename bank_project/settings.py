@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bank_app',
     'login_app',
+    'chat_app',
     'channels',
 ]
 
@@ -72,6 +73,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bank_project.wsgi.application'
 
+# Channels
 ASGI_APPLICATION = "bank_project.asgi.application"
 
 

@@ -6,35 +6,36 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 
 from django.http.response import JsonResponse
-from rest_framework.parsers import JSONParser 
+from rest_framework.parsers import JSONParser
 from rest_framework import status
- 
+
 from .serializers import LedgerSerializer
 from rest_framework.decorators import api_view
 
+
 @login_required
 def index(request):
-   customers = Customer.objects.filter(user=request.user)
-   print(customers)
-   loans = Account.objects.filter(
-       user=request.user).filter(account_type='LOAN')
-   accounts = Account.objects.filter(
-       user=request.user).filter(account_type='BANK_ACCOUNT')
-   context = {
-      'customers': customers,
-      'accounts': accounts,
-      'loans': loans
-   }
-   print(loans, accounts)
-   return render(request, 'bank_app/index.html', context)
+    customers = Customer.objects.filter(user=request.user)
+    print(customers)
+    loans = Account.objects.filter(
+        user=request.user).filter(account_type='LOAN')
+    accounts = Account.objects.filter(
+        user=request.user).filter(account_type='BANK_ACCOUNT')
+    context = {
+        'customers': customers,
+        'accounts': accounts,
+        'loans': loans
+    }
+    print(loans, accounts)
+    return render(request, 'bank_app/index.html', context)
 
 
 def employee(request):
     customers = Customer.objects.all()
     accounts = Account.objects.all()
     context = {
-            'customers': customers,
-            'accounts': accounts
+        'customers': customers,
+        'accounts': accounts
     }
     return render(request, 'bank_app/employee.html', context)
 
@@ -71,33 +72,33 @@ def add_customer(request):
                 return HttpResponseRedirect(reverse('bank_app:employee'))
             else:
                 context = {
-                        'error': 'Could not create user account - please try again.'
+                    'error': 'Could not create user account - please try again.'
                 }
         else:
             context = {
-                    'error': 'Passwords did not match. Please try again.'
+                'error': 'Passwords did not match. Please try again.'
             }
     return render(request, 'bank_app/employee.html', context)
 
 
 def add_account_by_employee(request):
-     accounts = Account.objects.filter(user=request.user)
-     customers = Customer.objects.filter(user=request.user)
-     context = {
-             'accounts': accounts
-     }
-     if request.method == 'POST':
-         account_type = request.POST['account_type']
-         account_name = request.POST['name']
-         account = Account()
-         account.user = request.user
-         account.name = account_name
-         account.account_number = "12345678"
-         account.account_type = account_type
-         account.save()
+    accounts = Account.objects.filter(user=request.user)
+    customers = Customer.objects.filter(user=request.user)
+    context = {
+        'accounts': accounts
+    }
+    if request.method == 'POST':
+        account_type = request.POST['account_type']
+        account_name = request.POST['name']
+        account = Account()
+        account.user = request.user
+        account.name = account_name
+        account.account_number = "12345678"
+        account.account_type = account_type
+        account.save()
 
-         return redirect('bank_app:employee')
-     return render(request, 'bank_app/employee.html', context)
+        return redirect('bank_app:employee')
+    return render(request, 'bank_app/employee.html', context)
 
 
 @login_required
@@ -105,7 +106,7 @@ def add_account(request):
     accounts = Account.objects.filter(user=request.user)
     customers = Customer.objects.filter(user=request.user)
     context = {
-            'accounts': accounts
+        'accounts': accounts
     }
     if request.method == 'POST':
         account_type = request.POST['account_type']
@@ -127,7 +128,7 @@ def movements(request, account_id):
     movements = Ledger.objects.filter(id_account_fk=account_id)
     print(movements)
     context = {
-            'movements': movements
+        'movements': movements
     }
     return render(request, 'bank_app/movements.html', context)
 
@@ -138,8 +139,8 @@ def take_loan(request, customer_id):
         user=request.user).filter(account_type='BANK_ACCOUNT')
     customer = get_object_or_404(Customer, pk=customer_id)
     context = {
-            'accounts': accounts,
-            'customer': customer
+        'accounts': accounts,
+        'customer': customer
     }
     if request.method == 'POST':
         account_type = request.POST['account_type']
@@ -169,9 +170,9 @@ def pay_loan(request, customer_id, loan_id):
     accounts = Account.objects.filter(
         user=request.user).filter(account_type='BANK_ACCOUNT')
     context = {
-            'accounts': accounts,
-            'customer': customer,
-            'loan': loan
+        'accounts': accounts,
+        'customer': customer,
+        'loan': loan
     }
 
     if request.method == 'POST':
@@ -237,11 +238,29 @@ def transfers(request, account_id):
 
 @api_view(['POST'])
 def api_transfers(request):
+    post = request.POST.copy()
+    post['id_account_fk'] = 11
+    request.POST = post
+    request1 = {"id_account_fk": request.POST['fromAccount'],
+                "amount": request.POST['amount'], "text": request.POST['text']}
+    request.data.update({"id_account_fk": request.POST['fromAccount']})
+    #x = requests.post(url, data=myobj)
     # if request.method == 'POST':
-        ledger_data = JSONParser().parse(request)
-        ledger_serializer = LedgerSerializer(data=ledger_data)
-        if ledger_serializer.is_valid():
-            ledger_serializer.save()
-            return JsonResponse(ledger_serializer.data, status=status.HTTP_201_CREATED) 
-        return JsonResponse(ledger_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+    # amount = request.POST['amount']
+    # from_account = request.POST['fromAccount']
+    # request.POST['id_account_fk'] = request.POST['fromAccount']
+    # to_account = request.POST['toAccount']
+    # text = request.POST['text']
+    #acc_balance = currentAccount.balance
+    # acc_balance = 1000
+    # if acc_balance >= int(amount):
+    #ledger_data = int(amount), from_account, to_account, text
+    ledger_data = JSONParser().parse(request.data)
+    # print(ledger_data)
+
+    ledger_serializer = LedgerSerializer(data=ledger_data)
+    if ledger_serializer.is_valid():
+        ledger_serializer.save()
+        return JsonResponse(ledger_serializer.data, status=status.HTTP_201_CREATED)
+
+    return JsonResponse(ledger_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

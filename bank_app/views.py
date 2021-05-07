@@ -236,31 +236,43 @@ def transfers(request, account_id):
     return render(request, 'bank_app/transfers.html', context)
 
 
-@api_view(['POST'])
-def api_transfers(request):
-    post = request.POST.copy()
-    post['id_account_fk'] = 11
-    request.POST = post
-    request1 = {"id_account_fk": request.POST['fromAccount'],
-                "amount": request.POST['amount'], "text": request.POST['text']}
-    request.data.update({"id_account_fk": request.POST['fromAccount']})
-    #x = requests.post(url, data=myobj)
-    # if request.method == 'POST':
-    # amount = request.POST['amount']
-    # from_account = request.POST['fromAccount']
-    # request.POST['id_account_fk'] = request.POST['fromAccount']
-    # to_account = request.POST['toAccount']
-    # text = request.POST['text']
-    #acc_balance = currentAccount.balance
-    # acc_balance = 1000
-    # if acc_balance >= int(amount):
-    #ledger_data = int(amount), from_account, to_account, text
-    ledger_data = JSONParser().parse(request.data)
-    # print(ledger_data)
+# @api_view(['POST'])
+# def api_transfers(request):
+#     # post = request.POST.copy()
+#     # post['id_account_fk'] = 11
+#     # request.POST = post
+#     # request1 = {"id_account_fk": request.POST['fromAccount'],
+#     #             "amount": request.POST['amount'], "text": request.POST['text']}
+#     # request.data.update({"id_account_fk": request.POST['fromAccount']})
+#     #x = requests.post(url, data=myobj)
+#     # if request.method == 'POST':
+#     # amount = request.POST['amount']
+#     # from_account = request.POST['fromAccount']
+#     # request.POST['id_account_fk'] = request.POST['fromAccount']
+#     # to_account = request.POST['toAccount']
+#     # text = request.POST['text']
+#     #acc_balance = currentAccount.balance
+#     # acc_balance = 1000
+#     # if acc_balance >= int(amount):
+#     #ledger_data = int(amount), from_account, to_account, text
+#     ledger_data = JSONParser().parse(request1)
+#     # print(ledger_data)
 
-    ledger_serializer = LedgerSerializer(data=ledger_data)
-    if ledger_serializer.is_valid():
-        ledger_serializer.save()
-        return JsonResponse(ledger_serializer.data, status=status.HTTP_201_CREATED)
+#     amount = request.POST['amount']
+#     from_account = request.POST['fromAccount']
+#     account = get_object_or_404(Account, pk=from_account)
+#     to_account = request.POST['toAccount']
+#     text = request.POST['text']
 
-    return JsonResponse(ledger_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     ledger_serializer = LedgerSerializer(
+#         id_account_fk=account, amount=amount, text=text, transaction_id=1)
+
+#     # if ledger_serializer.is_valid():
+#     #     ledger_serializer.save()
+#     #     return JsonResponse(ledger_serializer.data, status=status.HTTP_201_CREATED)
+
+#     # return JsonResponse(ledger_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#     if request.method == 'POST':
+#         return Response({"message": "Got some data!", "data": request.data})
+#     return Response({"message": "Hello, world!"})

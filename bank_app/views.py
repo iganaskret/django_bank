@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
+from django.db import transaction
 
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser 
@@ -11,6 +12,7 @@ from rest_framework import status
  
 from .serializers import LedgerSerializer
 from rest_framework.decorators import api_view
+from django.utils.decorators import method_decorator
 
 @login_required
 def index(request):
@@ -234,12 +236,9 @@ def transfers(request, account_id):
 
     return render(request, 'bank_app/transfers.html', context)
 
-
 @api_view(['POST'])
 def api_transfers(request):
-    # if request.method == 'POST':
-        ledger_data = JSONParser().parse(request)
-        ledger_serializer = LedgerSerializer(data=ledger_data)
+        ledger_serializer = LedgerSerializer(data=request.data, many=True)
         if ledger_serializer.is_valid():
             ledger_serializer.save()
             return JsonResponse(ledger_serializer.data, status=status.HTTP_201_CREATED) 

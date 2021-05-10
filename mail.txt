@@ -1,6 +1,6 @@
 From: Ksawery Karczewski <ksaw0011@stud.kea.dk>
 To: Iga Naskret <igax0027@stud.kea.dk>
 Subject: Testing SendInBlue
-Date: Fri, 30 Apr 2021 16:15
+Date: Mon, 10 May 2021 15:15
 
 Hey there!

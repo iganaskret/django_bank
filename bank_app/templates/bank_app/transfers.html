@@ -17,4 +17,34 @@
       <p> {{ error }}</p>
 {% endif %}
 <a href={% url 'bank_app:index' %}>go back</a>
+
+
+<script>
+    // document.cookie = 'name=Transfer'
+    // console.log(document.cookie);
+
+    // name=Transfer; 
+    // csrftoken=st1oqCQIRPed89lhDEd4HkLq4BPivWq48xr4N8mrlTPg8xcQkFv4IVDlyYycETbb
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+    //const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    console.log(csrftoken);
+    
+    </script>
 {% endblock %}

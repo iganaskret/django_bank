@@ -1,5 +1,5 @@
 {% extends 'chat_app/base.html' %} {% block content %}
-    <a href="#">Go back</a>
+    <input id="go-back" type="button" value="Go Back">
 
     <p>What chat room would you like to enter?</p> 
     <input id="room-name-input" type="text" size="100"><br>
@@ -16,6 +16,11 @@
         document.querySelector('#room-name-submit').onclick = function(e) {
             var roomName = document.querySelector('#room-name-input').value;
             window.location.pathname = 'bank/chat/' + roomName + '/';
+        };
+
+        document.querySelector('#go-back').onclick = function(e) {
+            var roomName = document.querySelector('#go-back').value;
+            window.location.pathname = 'bank';
         };
     </script>
 {% endblock %}

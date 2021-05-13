@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Account
 from .models import Ledger
+from .models import ExternalLedger
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 import uuid
@@ -44,17 +45,17 @@ class LedgerSerializer(serializers.ModelSerializer):
     # def is_valid(self, raise_exception=False):
     #     is_validated = super().is_valid(raise_exception=False)
 
-    def create(self, validated_data):
+    # new comment def create(self, validated_data):
 
         #     # user = self.context['request'].user
         #     # validated_data['user'] = user
-        transaction_id = uuid.uuid4()
+        # new comment transaction_id = uuid.uuid4()
         # account = get_object_or_404(
         #     Account, pk=validated_data.get("fromAccount"))
         # ledger = Ledger.objects.create(id_account_fk=validated_data.get("id_account_fk"), amount=validated_data.get(
         #     "amount"), text=validated_data.get("text"), transaction_id=transaction_id)
-        ledger = Ledger.objects.create(**validated_data)
-        return ledger
+        # new comment ledger = Ledger.objects.create(**validated_data)
+        # new comment return ledger
 
         #     #account_data = validated_data.pop('account')
         #     id_account_fk = get_object_or_404(
@@ -69,3 +70,10 @@ class LedgerSerializer(serializers.ModelSerializer):
         #         validated_data['amount'] * currency.rate_to_bgn, 2)
 
         #     return super(FundTransferSerializer, self).create(validated_data)
+
+
+class ExternalLedgerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExternalLedger
+        fields = ('__all__')
+        extra_kwargs = {"pk": {"read_only": False}}

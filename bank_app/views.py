@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Account, Ledger, Customer
+from .models import Account, Ledger, Customer, ExternalLedger
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -9,8 +9,10 @@ from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser
 from rest_framework import status
 
-from .serializers import LedgerSerializer
+from .serializers import ExternalLedgerSerializer
 from rest_framework.decorators import api_view
+import requests
+from requests.auth import HTTPBasicAuth
 
 
 @login_required
@@ -235,6 +237,64 @@ def transfers(request, account_id):
 
     return render(request, 'bank_app/transfers.html', context)
 
+
+@login_required
+def external_transfers(request, account_id):
+    currentAccount = get_object_or_404(Account, pk=account_id)
+    # currentAccount = Account.objects.filter(pk=account_id)
+    print(currentAccount)
+    allAccounts = Account.objects.exclude(pk=account_id)
+    context = {
+        'currentAccount': currentAccount,
+        'allAccounts': allAccounts
+    }
+    if request.method == 'POST':
+
+        amount = request.POST['amount']
+        from_account = request.POST['fromAccount']
+        to_account = request.POST['toForeignBankAccount']
+        text = request.POST['text']
+        acc_balance = currentAccount.balance
+        foreign_account = request.POST['toAccount']
+
+        externalLedger = ExternalLedger()
+        from_account_obj = get_object_or_404(Account, pk=from_account)
+        externalLedger.localAccount = from_account_obj
+        externalLedger.foreignAccount = foreign_account
+        externalLedger.amount = amount
+        externalLedger.text = text
+
+        pload = {"localAccount": foreign_account, "foreignAccount": from_account,
+                 "amount": amount, "text": text}
+
+        my_headers = {
+            'Authorization': 'Bearer {access_token}'}
+        r = requests.post(
+            'http://0.0.0.0:8003/bank/api/v1/external_ledger/', headers=my_headers, data=pload)
+        print(r.text)
+
+        if acc_balance >= int(amount):
+            Ledger.transaction(int(amount), from_account, to_account, text)
+            externalLedger.save()
+            return redirect('bank_app:index')
+        else:
+            context = {
+                'currentAccount': currentAccount,
+                'allAccounts': allAccounts,
+                'error': 'your balance is too low'
+            }
+
+    return render(request, 'bank_app/transfers.html', context)
+
+
+@api_view(['POST'])
+def api_transfers(request):
+    external_ledger_serializer = ExternalLedgerSerializer(
+        data=request.data, many=True)
+    if external_ledger_serializer.is_valid():
+        external_ledger_serializer.save()
+        return JsonResponse(external_ledger_serializer.data, status=status.HTTP_201_CREATED)
+    return JsonResponse(external_ledger_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # @api_view(['POST'])
 # def api_transfers(request):

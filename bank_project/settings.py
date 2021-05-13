@@ -25,7 +25,7 @@ SECRET_KEY = '^pvb@5(=4py)jdyoc7+bfyd+jaa@^z-e%2hg$=#d4uaceo=4hb'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['172.104.128.162', '139.162.132.230', '127.0.0.1']
+ALLOWED_HOSTS = ['172.104.128.162', '139.162.132.230', '127.0.0.1', '0.0.0.0']
 
 
 # Application definition
@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     'bank_app',
     'login_app',
     'rest_framework',
-    # 'rest_framework.authtoken',
-    # 'rest_auth',
+    'rest_framework.authtoken',
+    'rest_auth',
 ]
 
 MIDDLEWARE = [
@@ -125,11 +125,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # REST_FRAMEWORK = {
-#    'DEFAULT_PERMISSION_CLASSES': [
-#       'bank_app.permissions.IsOwnerOrNoAccess',
-#       'rest_framework.permissions.IsAuthenticated',
-#    ],
-#    'DEFAULT_AUTHENTICATION_CLASSES': [
-#       'rest_framework.authentication.TokenAuthentication',
-#    ]
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'bank_app.permissions.IsOwnerOrNoAccess',
+#         'rest_framework.permissions.IsAuthenticated',
+#     ],
+#     'DEFAULT_AUTHENTICATION_CLASSES': [
+#         'rest_framework.authentication.TokenAuthentication',
+#     ]
 # }

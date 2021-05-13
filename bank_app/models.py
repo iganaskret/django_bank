@@ -38,6 +38,7 @@ class Account(models.Model):
     class AccountType(models.TextChoices):
         BANK_ACCOUNT = 'Bank Account'
         LOAN = 'Loan'
+        FOREIGN_BANK_ACCOUNT = 'Foreign Bank Account '
 
     account_type = models.CharField(
         choices=AccountType.choices, default=AccountType.BANK_ACCOUNT, max_length=200)
@@ -82,3 +83,16 @@ class Ledger(models.Model):
         ledger = cls(id_account_fk=receiver_account,
                      amount=amount, text=text, transaction_id=id)
         ledger.save()
+
+
+class ExternalLedger(models.Model):
+    localAccount = models.ForeignKey(
+        'Account', on_delete=models.CASCADE, related_name="external_ledger")
+    foreignAccount = models.CharField(max_length=100, blank=False)
+    amount = models.DecimalField(max_digits=20, decimal_places=2)
+    text = models.CharField(max_length=20)
+    date_created = models.DateTimeField(auto_now_add=True)
+    #transaction_id = models.CharField(max_length=100, blank=True)
+
+    def __str__(self):
+        return f"{self.localAccount.name} - {self.foreignAccount} -  {self.amount} -  {self.text}"

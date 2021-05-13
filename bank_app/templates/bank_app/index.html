@@ -2,10 +2,11 @@
 <h2> Your accounts </h2>
    <ul>
     {% for account in accounts %}
-
-    <li>{{ account.name }}, {{ account.id }}: {{ account.balance }} dkk</li>
-      <a href={% url 'bank_app:movements' account_id=account.id %}>see movements</a>
-<a href="{% url 'bank_app:transfers' account_id=account.id %}">Make a transfer</a>
+      <div class="account">
+         <li>{{ account.name }}, {{ account.id }}: {{ account.balance }} dkk</li>
+         <a href={% url 'bank_app:movements' account_id=account.id %}>see movements</a>
+         <a href="{% url 'bank_app:transfers' account_id=account.id %}">Make a transfer</a>
+      </div>
     {% endfor %}
    </ul>
 {% if customer.rank != 'basic' %}
@@ -21,4 +22,5 @@
     </ul>
 {% endif %}
 <a href={% url 'bank_app:add_account' %}>add account</a>
+<br />
 {% endblock %}

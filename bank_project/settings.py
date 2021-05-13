@@ -38,8 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # my apps
     'bank_app',
     'login_app',
+    'notifier',
+    # 3rd party apps
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +75,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'bank_project.wsgi.application'
+# asgi
+ASGI_APPLICATION = "bank_project.asgi.application"
 
 
 # Database
@@ -121,3 +127,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Channels
+# ASGI_APPLICATION = 'bank_project.asgi.application'
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('127.0.0.1', 6379)],
+#         },
+#     },
+# }

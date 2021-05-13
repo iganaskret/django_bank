@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title>Notifier</title>
+  </head>
+  <body>
+    <h1>Notifier</h1>
+    <p id="random"></p>
+    <script>
+      var socket = new WebSocket('ws://localhost:8000/ws/some_url/');
+      socket.onmessage = function(event){
+        var data  = JSON.parse(event.data);
+        console.log(data);
+        document.querySelector('#random').innerText = data.message;
+      }
+    </script>
+  </body>
+</html>

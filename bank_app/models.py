@@ -67,7 +67,7 @@ class Ledger(models.Model):
     transaction_id = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
-        return f"{self.id_account_fk} - {self.amount} -  {self.text} - {self.transaction_id}"
+        return f"{self.id_account_fk.id} - {self.amount} -  {self.text} - {self.transaction_id}"
 
     @classmethod
     @transaction.atomic

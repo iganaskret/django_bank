@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+#from rest_framework.authtoken import views
 
 from . import views
 from .api import AccountList, AccountDetail, LedgerList, LedgerDetail, ExternalLedgerList, ExternalLedgerDetail
@@ -27,4 +28,5 @@ urlpatterns = [
     path('api/v1/ledger/<int:pk>/', LedgerDetail.as_view()),
     path('api/v1/external_ledger/<int:pk>/', ExternalLedgerDetail.as_view()),
     path('api/v1/rest-auth/', include('rest_auth.urls')),
+    #path('api-token-auth/', views.obtain_auth_token)
 ]

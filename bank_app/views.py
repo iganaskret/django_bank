@@ -9,7 +9,7 @@ from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser
 from rest_framework import status
 
-from .serializers import ExternalLedgerSerializer
+from .serializers import ExternalLedgerSerializer, LedgerSerializer
 from rest_framework.decorators import api_view
 import requests
 from requests.auth import HTTPBasicAuth
@@ -242,7 +242,6 @@ def transfers(request, account_id):
 def external_transfers(request, account_id):
     currentAccount = get_object_or_404(Account, pk=account_id)
     # currentAccount = Account.objects.filter(pk=account_id)
-    print(currentAccount)
     allAccounts = Account.objects.exclude(pk=account_id)
     context = {
         'currentAccount': currentAccount,
@@ -264,13 +263,28 @@ def external_transfers(request, account_id):
         externalLedger.amount = amount
         externalLedger.text = text
 
+        # url = 'http://0.0.0.0:8003/bank/api/v1/external_ledger/'
+        # headers = {
+        #     'Authorization': 'Token 4e3e5662799e6442075ccf23b8435547b8c58f15'}
+        # r = requests.get(url, headers=headers)
+
         pload = {"localAccount": foreign_account, "foreignAccount": from_account,
                  "amount": amount, "text": text}
 
         my_headers = {
-            'Authorization': 'Bearer {access_token}'}
+            'Authorization': 'Token 4e3e5662799e6442075ccf23b8435547b8c58f15'}
         r = requests.post(
             'http://0.0.0.0:8003/bank/api/v1/external_ledger/', headers=my_headers, data=pload)
+        print(r.text)
+
+# I deleted toAccount, for transactions add FOREIGN ACC in that bank
+        pload = {"id_account_fk": from_account,
+                 "amount": amount, "text": text}
+
+        my_headers = {
+            'Authorization': 'Token 4e3e5662799e6442075ccf23b8435547b8c58f15'}
+        r = requests.post(
+            'http://0.0.0.0:8003/bank/api/v1/ledger/', headers=my_headers, data=pload)
         print(r.text)
 
         if acc_balance >= int(amount):
@@ -291,10 +305,17 @@ def external_transfers(request, account_id):
 def api_transfers(request):
     external_ledger_serializer = ExternalLedgerSerializer(
         data=request.data, many=True)
+    ledger_serializer = LedgerSerializer(
+        data=request.data, many=True)
+    # print(request.auth)
+
     if external_ledger_serializer.is_valid():
         external_ledger_serializer.save()
         return JsonResponse(external_ledger_serializer.data, status=status.HTTP_201_CREATED)
-    return JsonResponse(external_ledger_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif ledger_serializer.is_valid():
+        ledger_serializer.save()
+        return JsonResponse(ledger_serializer.data, status=status.HTTP_201_CREATED)
+    return JsonResponse(ledger_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # @api_view(['POST'])
 # def api_transfers(request):

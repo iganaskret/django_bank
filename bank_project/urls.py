@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from two_factor.urls import urlpatterns as tf_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('bank/', include('bank_app.urls')),
-    path('accounts/', include('login_app.urls')),
+   path('', include(tf_urls)),
+    path('account/profile/', include('bank_app.urls')),
+    path('account/', include('login_app.urls')),
 ]

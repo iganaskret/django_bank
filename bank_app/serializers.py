@@ -43,6 +43,23 @@ class LedgerSerializer(serializers.ModelSerializer):
         fields = ('id_account_fk', 'amount', 'text')
         extra_kwargs = {"pk": {"read_only": False}}
 
+    # @classmethod
+    # @transaction.atomic
+    # def create(cls, validated_data):
+    #     id = uuid.uuid4()
+    #     sender_account = get_object_or_404(
+    #         Account, pk=validated_data.get("id_account_fk"))
+    #     ledger = Ledger()
+    #     ledger = cls(id_account_fk=sender_account, amount=-
+    #                  validated_data.get("amount"), text=validated_data.get("text"), transaction_id=id)
+    #     ledger.save()
+    #     receiver_account = get_object_or_404(Account, pk=26)
+    #     ledger = Ledger()
+    #     ledger = cls(id_account_fk=receiver_account,
+    #                  amount=-
+    #                  validated_data.get("amount"), text=validated_data.get("text"), transaction_id=id)
+    #     ledger.save()
+
     # def create(self, validated_data):
     #     print(validated_data)
     #     account_data = validated_data.pop('id_account_fk')

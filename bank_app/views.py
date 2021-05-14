@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
+import uuid
 
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser
@@ -262,6 +263,7 @@ def external_transfers(request, account_id):
         externalLedger.foreignAccount = foreign_account
         externalLedger.amount = amount
         externalLedger.text = text
+        transaction_id = uuid.uuid4()
 
         # url = 'http://0.0.0.0:8003/bank/api/v1/external_ledger/'
         # headers = {
@@ -277,9 +279,17 @@ def external_transfers(request, account_id):
             'http://0.0.0.0:8003/bank/api/v1/external_ledger/', headers=my_headers, data=pload)
         print(r.text)
 
-# I deleted toAccount, for transactions add FOREIGN ACC in that bank
         pload = {"id_account_fk": from_account,
-                 "amount": amount, "text": text}
+                 "amount": amount, "text": text, "transaction_id": transaction_id}
+
+        my_headers = {
+            'Authorization': 'Token 4e3e5662799e6442075ccf23b8435547b8c58f15'}
+        r = requests.post(
+            'http://0.0.0.0:8003/bank/api/v1/ledger/', headers=my_headers, data=pload)
+        print(r.text)
+
+        pload = {"id_account_fk": 26,
+                 "amount": amount, "text": text, "transaction_id": transaction_id}
 
         my_headers = {
             'Authorization': 'Token 4e3e5662799e6442075ccf23b8435547b8c58f15'}

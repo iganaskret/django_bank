@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '^pvb@5(=4py)jdyoc7+bfyd+jaa@^z-e%2hg$=#d4uaceo=4hb'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['172.104.128.162', '139.162.132.230', '127.0.0.1']
 
@@ -131,7 +131,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 LOGIN_URL = 'two_factor:login'
-
+LOGIN_REDIRECT_URL = 'two_factor:profile'
 # REST_FRAMEWORK = {
 #    'DEFAULT_PERMISSION_CLASSES': [
 #       'bank_app.permissions.IsOwnerOrNoAccess',

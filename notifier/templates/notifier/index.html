@@ -6,12 +6,38 @@
     <h1>Notifier</h1>
     <p id="random"></p>
     <script>
-      var socket = new WebSocket('ws://localhost:8000/ws/some_url/');
+
+      // instance of the websocket class - pass url to send request to
+      var socket = new WebSocket(
+        'ws://' 
+        + 
+        window.location.host 
+        + 
+        '/ws/notifier/'
+        );
+
+      console.log(socket)
+      // the function that gets an event from the browser
+      // socket.onmessage = function(event){
+      //   // data attribute of the event object
+      //   var data  = JSON.parse(event.data);
+      //   console.log(data);
+      //   //document.querySelector('#random').innerText = data.message;
+      // }
+
       socket.onmessage = function(event){
-        var data  = JSON.parse(event.data);
-        console.log(data);
-        document.querySelector('#random').innerText = data.message;
+        console.log("onmessage", event);
       }
+      socket.onopen = function(event){
+        console.log("onopen", event);
+      }
+      socket.onerror = function(event){
+        console.log("onerror", event);
+      }
+      socket.onclose = function(event){
+        console.log("onclose", event);
+      }
+      
     </script>
   </body>
 </html>

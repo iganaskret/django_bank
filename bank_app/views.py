@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 import uuid
+import json
 
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser
@@ -148,7 +149,7 @@ def take_loan(request, customer_id):
     if request.method == 'POST':
         account_type = request.POST['account_type']
         loan_name = request.POST['loan_name']
-        loans_amount = request.POST['loan_amount']
+        loan_amount = request.POST['loan_amount']
         account = Account()
         account.user = request.user
         account.name = loan_name
@@ -265,7 +266,13 @@ def external_transfers(request, account_id):
         externalLedger.text = text
         transaction_id = uuid.uuid4()
 
-        # url = 'http://0.0.0.0:8003/bank/api/v1/external_ledger/'
+        url = 'http://0.0.0.0:8003/bank/api/v1/rest-auth/login/'
+        pload = {"username": "external_transfers", "password": 'external123'}
+        r = requests.post(url, data=pload)
+        keystring = json.loads(r.text)
+        key = keystring["key"]
+        print(f'Token {key}')
+
         # headers = {
         #     'Authorization': 'Token 4e3e5662799e6442075ccf23b8435547b8c58f15'}
         # r = requests.get(url, headers=headers)
@@ -274,7 +281,7 @@ def external_transfers(request, account_id):
                  "amount": amount, "text": text}
 
         my_headers = {
-            'Authorization': 'Token 4e3e5662799e6442075ccf23b8435547b8c58f15'}
+            'Authorization': f'Token {key}'}
         r = requests.post(
             'http://0.0.0.0:8003/bank/api/v1/external_ledger/', headers=my_headers, data=pload)
         print(r.text)
@@ -283,7 +290,7 @@ def external_transfers(request, account_id):
                  "amount": amount, "text": text, "transaction_id": transaction_id}
 
         my_headers = {
-            'Authorization': 'Token 4e3e5662799e6442075ccf23b8435547b8c58f15'}
+            'Authorization': f'Token {key}'}
         r = requests.post(
             'http://0.0.0.0:8003/bank/api/v1/ledger/', headers=my_headers, data=pload)
         print(r.text)
@@ -292,7 +299,7 @@ def external_transfers(request, account_id):
                  "amount": amount, "text": text, "transaction_id": transaction_id}
 
         my_headers = {
-            'Authorization': 'Token 4e3e5662799e6442075ccf23b8435547b8c58f15'}
+            'Authorization': f'Token {key}'}
         r = requests.post(
             'http://0.0.0.0:8003/bank/api/v1/ledger/', headers=my_headers, data=pload)
         print(r.text)

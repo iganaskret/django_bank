@@ -1,42 +1,59 @@
+{% load static %}
 <html>
   <head>
     <title>Notifier</title>
+    <script src="{% static '/channels/js/websocketbridge.js' %}" type="text/javascript"></script>
   </head>
   <body>
     <h1>Notifier</h1>
-    <p id="random"></p>
+    <ul id="notifier"></ul>
     <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const webSocketBridge = new channels.WebSocketBridge();
+      const nontifierList = document.querySelector("#notifier");
+      let ms = Date.now();
+      
+      webSocketBridge.connect('/ws/notifier/');
+      webSocketBridge.listen(function(action, stream) {
+        console.log("RESPONSE:", action);
+
+        if ( action.event == "New User" ) {
+          var newUserItem = document.createElement("li");
+
+          newUserItem.innerHTML = `New user: <b>${action.username}</b> has joined! at: ${ms}`;
+          nontifierList.appendChild(newUserItem);
+        }
+      })
+      document.ws = webSocketBridge; /* for debugging */
+
+
+
+
+    })
 
       // instance of the websocket class - pass url to send request to
-      var socket = new WebSocket(
-        'ws://' 
-        + 
-        window.location.host 
-        + 
-        '/ws/notifier/'
-        );
+      // var socket = new WebSocket(
+      //   'ws://' 
+      //   + 
+      //   window.location.host 
+      //   + 
+      //   '/ws/notifier/'
+      //   );
 
-      console.log(socket)
-      // the function that gets an event from the browser
+      // console.log(socket)
+
       // socket.onmessage = function(event){
-      //   // data attribute of the event object
-      //   var data  = JSON.parse(event.data);
-      //   console.log(data);
-      //   //document.querySelector('#random').innerText = data.message;
+      //   console.log("onmessage", event);
       // }
-
-      socket.onmessage = function(event){
-        console.log("onmessage", event);
-      }
-      socket.onopen = function(event){
-        console.log("onopen", event);
-      }
-      socket.onerror = function(event){
-        console.log("onerror", event);
-      }
-      socket.onclose = function(event){
-        console.log("onclose", event);
-      }
+      // socket.onopen = function(event){
+      //   console.log("onopen", event);
+      // }
+      // socket.onerror = function(event){
+      //   console.log("onerror", event);
+      // }
+      // socket.onclose = function(event){
+      //   console.log("onclose", event);
+      // }
       
     </script>
   </body>

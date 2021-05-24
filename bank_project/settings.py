@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'bank_app',
     'login_app',
     'rest_framework',
+    'django_rq',
     # 'rest_framework.authtoken',
     # 'rest_auth',
 
@@ -49,6 +50,26 @@ INSTALLED_APPS = [
     'django_otp.plugins.otp_totp',
     'two_factor',
     ]
+
+RQ_QUEUES = {
+   'default': {
+      'HOST': 'localhost',
+      'PORT': '6379',
+      'DB': 0,
+      'DEFAULT_TIMEOUT': 360,
+   }
+}
+
+# EMAIL SETTINGS
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = False
+EMAIL_HOST = 'smtp-relay.sendinblue.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'codr0040@stud.kea.dk'
+EMAIL_HOST_PASSWORD = 'JxpRLEZzFajOy085'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

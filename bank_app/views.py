@@ -15,16 +15,6 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-<< << << < HEAD
-== == == =
->>>>>> > rest_codrina_iga
-
-
-<< << << < HEAD
-== == == =
-
->>>>>> > rest_codrina_iga
-
 
 @login_required
 def index(request):
@@ -275,7 +265,7 @@ def external_transfers(request, account_id):
         externalLedger.text = text
         transaction_id = uuid.uuid4()
 
-        url = 'http://0.0.0.0:8003/bank/api/v1/rest-auth/login/'
+        url = 'http://0.0.0.0:8003/accounts/profile/api/v1/rest-auth/login/'
         pload = {"username": "external_transfers", "password": 'external123'}
         r = requests.post(url, data=pload)
         keystring = json.loads(r.text)
@@ -292,7 +282,7 @@ def external_transfers(request, account_id):
         my_headers = {
             'Authorization': f'Token {key}'}
         r = requests.post(
-            'http://0.0.0.0:8003/bank/api/v1/external_ledger/', headers=my_headers, data=pload)
+            'http://0.0.0.0:8003/accounts/profile/api/v1/external_ledger/', headers=my_headers, data=pload)
         print(r.text)
 
         pload = {"id_account_fk": from_account,
@@ -301,16 +291,16 @@ def external_transfers(request, account_id):
         my_headers = {
             'Authorization': f'Token {key}'}
         r = requests.post(
-            'http://0.0.0.0:8003/bank/api/v1/ledger/', headers=my_headers, data=pload)
+            'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload)
         print(r.text)
 
-        pload = {"id_account_fk": 26,
+        pload = {"id_account_fk": 3,
                  "amount": amount, "text": text, "transaction_id": transaction_id}
 
         my_headers = {
             'Authorization': f'Token {key}'}
         r = requests.post(
-            'http://0.0.0.0:8003/bank/api/v1/ledger/', headers=my_headers, data=pload)
+            'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload)
         print(r.text)
 
         if acc_balance >= int(amount):

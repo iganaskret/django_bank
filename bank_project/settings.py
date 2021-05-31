@@ -158,7 +158,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-<< << << < HEAD
+
 LOGIN_URL = 'two_factor:login'
 LOGIN_REDIRECT_URL = 'two_factor:profile'
 # REST_FRAMEWORK = {
@@ -170,7 +170,7 @@ LOGIN_REDIRECT_URL = 'two_factor:profile'
 #       'rest_framework.authentication.TokenAuthentication',
 #    ]
 # }
-== == == =
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -181,4 +181,3 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ]
 }
->>>>>> > rest_codrina_iga

@@ -1,3 +1,4 @@
 py-env
-bank_app/__pycache__
-login_app/migrations
+__pycache__/
+*.pyc
+*.pyo

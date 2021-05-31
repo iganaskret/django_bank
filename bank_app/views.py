@@ -295,7 +295,7 @@ def external_transfers(request, account_id):
             'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload)
         print(r.text)
 
-        pload = {"id_account_fk": 1,
+        pload = {"id_account_fk": 4,
                  "amount": amount, "text": text, "transaction_id": transaction_id}
 
         my_headers = {

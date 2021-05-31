@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
+    'djmoney',
+    # 'currencies',
 ]
 
 MIDDLEWARE = [
@@ -67,12 +69,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'currencies.context_processors.currencies'
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'bank_project.wsgi.application'
+
+#OPENEXCHANGERATES_APP_ID = 'da893b2db88c4971b75b0e2eba7278da'
 
 
 # Database

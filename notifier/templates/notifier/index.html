@@ -1,13 +1,12 @@
-{% load static %}
 <html>
   <head>
     <title>Notifier</title>
-    <script src="{% static '/channels/js/websocketbridge.js' %}" type="text/javascript"></script>
   </head>
   <body>
     <h1>Notifier</h1>
-    <ul id="notifier"></ul>
+    <p id="random"></p>
     <script>
+<<<<<<< HEAD
     document.addEventListener('DOMContentLoaded', function() {
       const webSocketBridge = new channels.WebSocketBridge();
       const nontifierList = document.querySelector("#notifier");
@@ -27,6 +26,40 @@
       })
       document.ws = webSocketBridge; /* for debugging */
     })
+=======
+
+      // instance of the websocket class - pass url to send request to
+      var socket = new WebSocket(
+        'ws://' 
+        + 
+        window.location.host 
+        + 
+        '/ws/notifier/'
+        );
+
+      console.log(socket)
+      // the function that gets an event from the browser
+      // socket.onmessage = function(event){
+      //   // data attribute of the event object
+      //   var data  = JSON.parse(event.data);
+      //   console.log(data);
+      //   //document.querySelector('#random').innerText = data.message;
+      // }
+
+      socket.onmessage = function(event){
+        console.log("onmessage", event);
+      }
+      socket.onopen = function(event){
+        console.log("onopen", event);
+      }
+      socket.onerror = function(event){
+        console.log("onerror", event);
+      }
+      socket.onclose = function(event){
+        console.log("onclose", event);
+      }
+      
+>>>>>>> parent of 34c60b1... user notification works
     </script>
   </body>
 </html>

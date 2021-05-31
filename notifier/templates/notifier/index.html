@@ -6,6 +6,27 @@
     <h1>Notifier</h1>
     <p id="random"></p>
     <script>
+<<<<<<< HEAD
+    document.addEventListener('DOMContentLoaded', function() {
+      const webSocketBridge = new channels.WebSocketBridge();
+      const nontifierList = document.querySelector("#notifier");
+      var date = new Date();
+      var stringDate = date.toTimeString();
+      
+      webSocketBridge.connect('/ws/notifier/');
+      webSocketBridge.listen(function(action, stream) {
+        console.log("RESPONSE:", action);
+
+        if ( action.event == "New User" ) {
+          var newUserItem = document.createElement("li");
+
+          newUserItem.innerHTML = `New user: <b>${action.username}</b> has joined! at: ${stringDate}`;
+          nontifierList.appendChild(newUserItem);
+        }
+      })
+      document.ws = webSocketBridge; /* for debugging */
+    })
+=======
 
       // instance of the websocket class - pass url to send request to
       var socket = new WebSocket(
@@ -38,6 +59,7 @@
         console.log("onclose", event);
       }
       
+>>>>>>> parent of 34c60b1... user notification works
     </script>
   </body>
 </html>

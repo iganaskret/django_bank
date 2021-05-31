@@ -7,6 +7,22 @@ from channels.generic.websocket import AsyncConsumer
 from channels.db import database_sync_to_async
 
 
+<<<<<<< HEAD
+class NotifierConsumer(AsyncJsonWebsocketConsumer):
+
+    async def connect(self):
+        await self.accept()
+        await self.channel_layer.group_add("notify", self.channel_name)
+        print(f"Added {self.channel_name} channel to notify")
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard("notify", self.channel_name)
+        print(f"Removed {self.channel_name} channel to notify")
+
+    async def user_gossip(self, event):
+        await self.send_json(event)
+        print(f"Got message {event} at {self.channel_name}")
+=======
 # class NotifierConsumer(WebsocketConsumer):
 #     def connect(self, event):
 #         # accept incoming connection from the browser(client)
@@ -40,3 +56,4 @@ class NotifierConsumer(AsyncConsumer):
 
     async def websocket_disconnect(self, event):
         print("disconnect", event)
+>>>>>>> parent of 34c60b1... user notification works

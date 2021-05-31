@@ -1,5 +1,5 @@
 {% extends 'bank_app/base.html' %} {% block content %}
-<h2>Transfer funds</h2>
+<h2>Transfer funds internally</h2>
 <form action={% url 'bank_app:transfers' account_id=currentAccount.pk %} method="POST">
     {% csrf_token %}
     <label for="fromAccount">from</label>
@@ -16,5 +16,100 @@
 {% if error %}
       <p> {{ error }}</p>
 {% endif %}
+
+<h2>Transfer funds externally</h2>
+<form action={% url 'bank_app:external_transfers' account_id=currentAccount.pk %} method="POST">
+    {% csrf_token %}
+    <label for="fromAccount">from</label>
+    <input type="number" name="fromAccount" id="fromAccount" placeholder="from" value={{ currentAccount.pk }}>
+    <!-- <select name="toAccount" id="toAccount">
+        {% for account in allAccounts %}
+        {% if account.account_type == 'Foreign Bank Account' %}
+        <option value={{ account.pk }}> {{ account.pk }} - {{ account.type }}</option>
+        {% endif %}
+        {% endfor %}
+    </select> -->
+    <input type="number" name="toForeignBankAccount" id="toForeignBankAccount" hidden value={{ 3 }}>
+    <input type="number" name="toAccount" id="toAccount" placeholder="to">
+    <input type="number" name="amount" id="amount" placeholder="amount">
+    <input name="text" id="text" placeholder="text">
+    <button type="submit"> external transfer</button>
+</form>
+{% if error %}
+      <p> {{ error }}</p>
+{% endif %}
 <a href={% url 'bank_app:index' %}>go back</a>
+
+<script>
+
+// function getCookie(name) {
+//     var cookieValue = null;
+//     if (document.cookie && document.cookie !== '') {
+//         var cookies = document.cookie.split(';');
+//         for (var i = 0; i < cookies.length; i++) {
+//             var cookie = cookies[i].trim();
+//             // Does this cookie string begin with the name we want?
+//             if (cookie.substring(0, name.length + 1) === (name + '=')) {
+//                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+//                 break;
+//             }
+//         }
+//     }
+//     return cookieValue;
+// }
+// var csrftoken = getCookie('csrftoken');
+
+// function uuidv4() {
+//   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+//     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+//     return v.toString(16);
+//   });
+// }
+
+// const iud = uuidv4()
+// var csrftoken = getCookie('csrftoken');
+// let fromAccount = document.querySelector("#transfer-externally #fromAccount").value;
+// let toAccount = document.querySelector("#transfer-externally #toAccount").value;
+// let amount = document.querySelector("#transfer-externally #amount").value;
+// let text = document.querySelector("#transfer-externally #text").value;
+
+// async function externalTransfer() {
+//     incomingTransfer()
+//     transferView();
+// }
+
+// async function incomingTransfer() {
+//     // adding to the ledger of the OTHER bank
+
+//     var headers = new Headers();
+//     // ADD AUTHENTIFICATION
+//     headers.append("Authorization", "Token c12b03dc0013a1e99a0a3c4a38221ee300eb8518");
+//     headers.append("X-CSRFToken", csrftoken);
+
+
+//     var formdata = new FormData();
+//     formdata.append("account", fromAccount);
+//     formdata.append("amount", `-${amount}`);
+//     formdata.append("text", text);
+//     formdata.append("transaction_id", iud);
+//     var request = {
+//         method: 'POST',
+//         headers: headers,
+//         body: formdata,
+//         redirect: 'follow'
+//     };
+//     var connection = await fetch(`http://0.0.0.0:8003/bank/api/v1/ledger/`, request)
+//     if (!connection.ok) {
+//         console.log("connection 1 failed");
+//         return;
+//     }
+//     var response = await connection.json();
+//     console.log(response);
+// }
+
+
+// </script>
+
+
+
 {% endblock %}

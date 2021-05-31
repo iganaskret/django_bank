@@ -22,4 +22,5 @@ urlpatterns = [
     path('', include(tf_urls)),
     path('accounts/profile/', include('bank_app.urls')),
     path('account/', include('login_app.urls')),
+
 ]

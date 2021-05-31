@@ -294,7 +294,8 @@ def external_transfers(request, account_id):
         r = requests.post(
             'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload)
         print(r.text)
-
+        
+        # "id_account_fk": the id of the FOREIGN ACC in the other bank
         pload = {"id_account_fk": 4,
                  "amount": amount, "text": text, "transaction_id": transaction_id}
 

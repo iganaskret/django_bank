@@ -52,8 +52,11 @@ INSTALLED_APPS = [
     'two_factor',
     'rest_framework.authtoken',
     'rest_auth',
-    'djmoney',
+    # 'djmoney',
     # 'currencies',
+    'notifier',
+    # 3rd party apps
+    'channels',
 ]
 
 RQ_QUEUES = {
@@ -181,4 +184,27 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ]
+}
+
+# Channels
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("localhost", 6379)],
+#         },
+#     },
+# }
+# bank_project/settings.py
+
+# asgi
+ASGI_APPLICATION = "bank_project.asgi.application"
+# Channels
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('localhost', 6379)],
+        },
+    },
 }

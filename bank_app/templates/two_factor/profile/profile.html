@@ -1,28 +1,7 @@
 {% extends "two_factor/_base.html" %}
 {% load i18n two_factor %} 
 {% block content %}
-<h2> Your accounts </h2>
-   <ul>
-    {% for account in accounts %}
-
-    <li>{{ account.name }}, {{ account.id }}: {{ account.balance }} dkk</li>
-      <a href={% url 'bank_app:movements' account_id=account.id %}>see movements</a>
-<a href="{% url 'bank_app:transfers' account_id=account.id %}">Make a transfer</a>
-    {% endfor %}
-   </ul>
-{% if customer.rank != 'basic' %}
-<h2> Your loans </h2>
-    <ul>
-       {% for account in loans %}
-
-       <li>{{ account.name }}, {{ account.id }}: {{ account.balance }} dkk
-<a href="{% url 'bank_app:pay_loan' customer_id=user.id loan_id=account.id  %}">Pay loan</a>
-       </li>
-
-       {% endfor %}
-    </ul>
-{% endif %}
-<a href={% url 'bank_app:add_account' %}>add account</a>
+<a href={% url 'bank_app:index' %}>See your profile</a>
 
 <h1>{% block title %}{% trans "Account Security" %}{% endblock %}</h1>
 

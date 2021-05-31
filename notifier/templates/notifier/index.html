@@ -11,7 +11,8 @@
     document.addEventListener('DOMContentLoaded', function() {
       const webSocketBridge = new channels.WebSocketBridge();
       const nontifierList = document.querySelector("#notifier");
-      let ms = Date.now();
+      var date = new Date();
+      var stringDate = date.toTimeString();
       
       webSocketBridge.connect('/ws/notifier/');
       webSocketBridge.listen(function(action, stream) {
@@ -20,41 +21,12 @@
         if ( action.event == "New User" ) {
           var newUserItem = document.createElement("li");
 
-          newUserItem.innerHTML = `New user: <b>${action.username}</b> has joined! at: ${ms}`;
+          newUserItem.innerHTML = `New user: <b>${action.username}</b> has joined! at: ${stringDate}`;
           nontifierList.appendChild(newUserItem);
         }
       })
       document.ws = webSocketBridge; /* for debugging */
-
-
-
-
     })
-
-      // instance of the websocket class - pass url to send request to
-      // var socket = new WebSocket(
-      //   'ws://' 
-      //   + 
-      //   window.location.host 
-      //   + 
-      //   '/ws/notifier/'
-      //   );
-
-      // console.log(socket)
-
-      // socket.onmessage = function(event){
-      //   console.log("onmessage", event);
-      // }
-      // socket.onopen = function(event){
-      //   console.log("onopen", event);
-      // }
-      // socket.onerror = function(event){
-      //   console.log("onerror", event);
-      // }
-      // socket.onclose = function(event){
-      //   console.log("onclose", event);
-      // }
-      
     </script>
   </body>
 </html>

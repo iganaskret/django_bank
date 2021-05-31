@@ -4,20 +4,32 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
+from django.db import transaction
+
+from django.http.response import JsonResponse
+from rest_framework.parsers import JSONParser 
+from rest_framework import status
+ 
+from .serializers import LedgerSerializer
+from rest_framework.decorators import api_view
+from django.utils.decorators import method_decorator
 
 @login_required
 def index(request):
    customers = Customer.objects.filter(user=request.user)
    print(customers)
-   loans= Account.objects.filter(user=request.user).filter(account_type='LOAN')
-   accounts = Account.objects.filter(user=request.user).filter(account_type= 'BANK_ACCOUNT')
+   loans = Account.objects.filter(
+       user=request.user).filter(account_type='LOAN')
+   accounts = Account.objects.filter(
+       user=request.user).filter(account_type='BANK_ACCOUNT')
    context = {
       'customers': customers,
       'accounts': accounts,
       'loans': loans
    }
-   print( loans, accounts)
+   print(loans, accounts)
    return render(request, 'bank_app/index.html', context)
+
 
 def employee(request):
     customers = Customer.objects.all()
@@ -28,9 +40,10 @@ def employee(request):
     }
     return render(request, 'bank_app/employee.html', context)
 
+
 def change_rank(request, customer_id):
     customer = get_object_or_404(Customer, pk=customer_id)
-    context = { 'customer': customer }
+    context = {'customer': customer}
 
     if request.method == 'POST':
         user = customer.user
@@ -40,6 +53,7 @@ def change_rank(request, customer_id):
         return redirect('bank_app:employee')
 
     return render(request, 'bank_app/employee.html', context)
+
 
 def add_customer(request):
     context = {}
@@ -52,7 +66,8 @@ def add_customer(request):
         phone = request.POST['phone']
         rank = request.POST['rank']
         username = request.POST['username']
-        user = User.objects.create_user(email=email, username=username, password=password, first_name=first_name, last_name=last_name)
+        user = User.objects.create_user(
+            email=email, username=username, password=password, first_name=first_name, last_name=last_name)
         if password == confirm_password:
             if Customer.objects.create(user=user, phone_number=phone, rank=rank):
                 return HttpResponseRedirect(reverse('bank_app:employee'))
@@ -65,6 +80,7 @@ def add_customer(request):
                     'error': 'Passwords did not match. Please try again.'
             }
     return render(request, 'bank_app/employee.html', context)
+
 
 def add_account_by_employee(request):
      accounts = Account.objects.filter(user=request.user)
@@ -84,6 +100,7 @@ def add_account_by_employee(request):
 
          return redirect('bank_app:employee')
      return render(request, 'bank_app/employee.html', context)
+
 
 @login_required
 def add_account(request):
@@ -106,6 +123,7 @@ def add_account(request):
 
     return render(request, 'bank_app/add_account.html', context)
 
+
 @login_required
 def movements(request, account_id):
     movements = Ledger.objects.filter(id_account_fk=account_id)
@@ -115,9 +133,11 @@ def movements(request, account_id):
     }
     return render(request, 'bank_app/movements.html', context)
 
+
 @login_required
 def take_loan(request, customer_id):
-    accounts = Account.objects.filter(user=request.user).filter(account_type='BANK_ACCOUNT')
+    accounts = Account.objects.filter(
+        user=request.user).filter(account_type='BANK_ACCOUNT')
     customer = get_object_or_404(Customer, pk=customer_id)
     context = {
             'accounts': accounts,
@@ -143,11 +163,13 @@ def take_loan(request, customer_id):
 
     return render(request, 'bank_app/take_loan.html', context)
 
+
 @login_required
 def pay_loan(request, customer_id, loan_id):
     loan = get_object_or_404(Account, pk=loan_id)
     customer = get_object_or_404(Customer, pk=customer_id)
-    accounts = Account.objects.filter(user=request.user).filter(account_type='BANK_ACCOUNT')
+    accounts = Account.objects.filter(
+        user=request.user).filter(account_type='BANK_ACCOUNT')
     context = {
             'accounts': accounts,
             'customer': customer,
@@ -188,7 +210,7 @@ def pay_loan(request, customer_id, loan_id):
 @login_required
 def transfers(request, account_id):
     currentAccount = get_object_or_404(Account, pk=account_id)
-    #currentAccount = Account.objects.filter(pk=account_id)
+    # currentAccount = Account.objects.filter(pk=account_id)
     print(currentAccount)
     allAccounts = Account.objects.exclude(pk=account_id)
     context = {
@@ -201,7 +223,7 @@ def transfers(request, account_id):
         to_account = request.POST['toAccount']
         text = request.POST['text']
         acc_balance = currentAccount.balance
-        #acc_balance = 1000
+        # acc_balance = 1000
         if acc_balance >= int(amount):
             Ledger.transaction(int(amount), from_account, to_account, text)
             return redirect('bank_app:index')
@@ -213,4 +235,13 @@ def transfers(request, account_id):
             }
 
     return render(request, 'bank_app/transfers.html', context)
+
+@api_view(['POST'])
+def api_transfers(request):
+        ledger_serializer = LedgerSerializer(data=request.data, many=True)
+        if ledger_serializer.is_valid():
+            ledger_serializer.save()
+            return JsonResponse(ledger_serializer.data, status=status.HTTP_201_CREATED) 
+        return JsonResponse(ledger_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 

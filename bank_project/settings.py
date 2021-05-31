@@ -39,7 +39,37 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bank_app',
     'login_app',
+    'rest_framework',
+    'django_rq',
+    # 'rest_framework.authtoken',
+    # 'rest_auth',
+
+    # Two Factor Authenthication
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
     ]
+
+RQ_QUEUES = {
+   'default': {
+      'HOST': 'localhost',
+      'PORT': '6379',
+      'DB': 0,
+      'DEFAULT_TIMEOUT': 360,
+   }
+}
+
+# EMAIL SETTINGS
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = False
+EMAIL_HOST = 'smtp-relay.sendinblue.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'codr0040@stud.kea.dk'
+EMAIL_HOST_PASSWORD = 'JxpRLEZzFajOy085'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -47,6 +77,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -120,3 +151,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+LOGIN_URL = 'two_factor:login'
+LOGIN_REDIRECT_URL = 'two_factor:profile'
+# REST_FRAMEWORK = {
+#    'DEFAULT_PERMISSION_CLASSES': [
+#       'bank_app.permissions.IsOwnerOrNoAccess',
+#       'rest_framework.permissions.IsAuthenticated',
+#    ],
+#    'DEFAULT_AUTHENTICATION_CLASSES': [
+#       'rest_framework.authentication.TokenAuthentication',
+#    ]
+# }

@@ -25,7 +25,7 @@ SECRET_KEY = '^pvb@5(=4py)jdyoc7+bfyd+jaa@^z-e%2hg$=#d4uaceo=4hb'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['172.104.128.162', '139.162.132.230', '127.0.0.1']
+ALLOWED_HOSTS = ['172.104.128.162', '139.162.132.230', '127.0.0.1', '0.0.0.0']
 
 
 # Application definition
@@ -49,15 +49,19 @@ INSTALLED_APPS = [
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
     'two_factor',
-    ]
+    'rest_framework.authtoken',
+    'rest_auth',
+    'djmoney',
+    # 'currencies',
+]
 
 RQ_QUEUES = {
-   'default': {
-      'HOST': 'localhost',
-      'PORT': '6379',
-      'DB': 0,
-      'DEFAULT_TIMEOUT': 360,
-   }
+    'default': {
+        'HOST': 'localhost',
+        'PORT': '6379',
+        'DB': 0,
+        'DEFAULT_TIMEOUT': 360,
+    }
 }
 
 # EMAIL SETTINGS
@@ -95,12 +99,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'currencies.context_processors.currencies'
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'bank_project.wsgi.application'
+
+#OPENEXCHANGERATES_APP_ID = 'da893b2db88c4971b75b0e2eba7278da'
 
 
 # Database
@@ -151,6 +158,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+<< << << < HEAD
 LOGIN_URL = 'two_factor:login'
 LOGIN_REDIRECT_URL = 'two_factor:profile'
 # REST_FRAMEWORK = {
@@ -162,3 +170,15 @@ LOGIN_REDIRECT_URL = 'two_factor:profile'
 #       'rest_framework.authentication.TokenAuthentication',
 #    ]
 # }
+== == == =
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'bank_app.permissions.IsOwnerOrNoAccess',
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+>>>>>> > rest_codrina_iga

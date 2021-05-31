@@ -3,3 +3,4 @@ py-env
 *.pyc
 *.pyo
 bank
+db.sqlite3

@@ -1,20 +1,21 @@
-from requests.auth import HTTPBasicAuth
-import requests
-from django.utils.decorators import method_decorator
-from rest_framework.decorators import api_view
-from .serializers import ExternalLedgerSerializer, LedgerSerializer
-from rest_framework import status
-from rest_framework.parsers import JSONParser
-from django.http.response import JsonResponse
-import json
-import uuid
-from django.db import transaction
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Account, Ledger, Customer, ExternalLedger
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
+import uuid
+import json
+from django.http import Http404
+from django.http.response import JsonResponse
+from rest_framework.parsers import JSONParser
+from rest_framework import status
+
+from .serializers import ExternalLedgerSerializer, LedgerSerializer
+from rest_framework.decorators import api_view
+import requests
+from requests.auth import HTTPBasicAuth
+
 
 @login_required
 def index(request):
@@ -294,7 +295,7 @@ def external_transfers(request, account_id):
             'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload)
         print(r.text)
 
-        pload = {"id_account_fk": 3,
+        pload = {"id_account_fk": 1,
                  "amount": amount, "text": text, "transaction_id": transaction_id}
 
         my_headers = {

@@ -32,16 +32,6 @@ and run it
 python manage.py runserver
 ```
 
-email and two factor
-
-```bash
-docker run -p 6379:6379 -d redis:5
-```
-
-```bash
-?
-```
-
 ### Multi-factor authentication
 
 ### External transfers

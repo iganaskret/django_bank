@@ -53,6 +53,7 @@ In order to make an external transfer, copy the bank into a separate folder and 
 
 ```bash
 python3 manage.py runserver 0.0.0.0:8003
+```
 
 ### Additional new features for the bank
 

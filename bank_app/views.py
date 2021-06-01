@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Account, Ledger, Customer, ExternalLedger
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 import uuid
 import json
@@ -15,6 +15,12 @@ from .serializers import ExternalLedgerSerializer, LedgerSerializer
 from rest_framework.decorators import api_view
 import requests
 from requests.auth import HTTPBasicAuth
+import io
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
+
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 
 @login_required
@@ -130,9 +136,11 @@ def add_account(request):
 @login_required
 def movements(request, account_id):
     movements = Ledger.objects.filter(id_account_fk=account_id)
+    print(account_id)
     print(movements)
     context = {
-        'movements': movements
+        'movements': movements,
+        "account_id": account_id
     }
     return render(request, 'bank_app/movements.html', context)
 
@@ -294,7 +302,7 @@ def external_transfers(request, account_id):
         r = requests.post(
             'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload)
         print(r.text)
-        
+
         # "id_account_fk": the id of the FOREIGN ACC in the other bank
         pload = {"id_account_fk": 4,
                  "amount": amount, "text": text, "transaction_id": transaction_id}
@@ -334,3 +342,59 @@ def api_transfers(request):
         ledger_serializer.save()
         return JsonResponse(ledger_serializer.data, status=status.HTTP_201_CREATED)
     return JsonResponse(ledger_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@login_required
+def pdf(request, account_id):
+    movements = Ledger.objects.filter(id_account_fk=account_id)
+
+    template_path = 'bank_app/movements_to_pdf.html'
+    context = {'movements': movements, "account_id": account_id}
+    # Create a Django response object, and specify content_type as pdf
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+        html, dest=response)
+    # if error then show some funy view
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
+#     # Create a file-like buffer to receive PDF data.
+#     buffer = io.BytesIO()
+
+#     # Create the PDF object, using the buffer as its "file."
+#     p = canvas.Canvas(buffer)
+
+#     # textobject = canvas.beginText(10, 10)
+#     # canvas.drawText(textobject)
+
+#     # Draw things on the PDF. Here's where the PDF generation happens.
+#     # See the ReportLab documentation for the full list of functionality.
+#     for movement in movements:
+#         text = f"{movement.text} : {movement.amount}"
+#         p.drawString(100, 100, text)
+
+#     # Close the PDF object cleanly, and we're done.
+#     p.showPage()
+#     p.save()
+
+#     # FileResponse sets the Content-Disposition header so that browsers
+#     # present the option to save the file.
+#     buffer.seek(0)
+#     return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
+
+
+# def movements(request, account_id):
+#     movements = Ledger.objects.filter(id_account_fk=account_id)
+#     print(movements)
+#     context = {
+#         'movements': movements
+#     }
+#     return render(request, 'bank_app/movements.html', context)

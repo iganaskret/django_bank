@@ -48,3 +48,4 @@ Twisted==21.2.0
 txaio==21.2.1
 urllib3==1.26.4
 zope.interface==5.4.0
+xhtml2pdf==0.2.5

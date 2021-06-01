@@ -20,6 +20,7 @@ urlpatterns = [
     path('external_transfers/<account_id>/',
          views.external_transfers, name='external_transfers'),
     path('movements/<account_id>/', views.movements, name='movements'),
+    path('pdf/<account_id>/', views.pdf, name='pdf'),
     # path('api/v1/add5to/<int:pk>/', TBDNAME.as_view()),
     path('api/v1/accounts/', AccountList.as_view()),
     path('api/v1/accounts/<int:pk>/', AccountDetail.as_view()),

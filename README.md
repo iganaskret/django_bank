@@ -5,6 +5,7 @@ For our 6th sem. exam we have designed and developed a banking system in Django.
 ### Requirements for starting the project:
 
 - Docker
+- Google Authenticator
 
 ### Project setup:
 
@@ -20,10 +21,16 @@ Create a virtual environment
 python3 -m venv py-env/bank
 ```
 
-and activate it
+activate it
 
 ```bash
 source py-env/bank/bin/activate
+```
+
+install requirements
+
+```bash
+pip install -r requirements.txt
 ```
 
 and run it

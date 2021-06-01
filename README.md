@@ -36,6 +36,12 @@ python manage.py runserver
 
 ### External transfers
 
+In order to create an external transfer, create another copy of the bank in the separate folder, and run in on port 0.0.0.0:8003
+
+```bash
+python3 manage.py runserver 0.0.0.0:8003
+```
+
 ### Additional new features for the bank
 
 1. Notifier

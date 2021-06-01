@@ -364,37 +364,3 @@ def pdf(request, account_id):
     if pisa_status.err:
         return HttpResponse('We had some errors <pre>' + html + '</pre>')
     return response
-
-
-#     # Create a file-like buffer to receive PDF data.
-#     buffer = io.BytesIO()
-
-#     # Create the PDF object, using the buffer as its "file."
-#     p = canvas.Canvas(buffer)
-
-#     # textobject = canvas.beginText(10, 10)
-#     # canvas.drawText(textobject)
-
-#     # Draw things on the PDF. Here's where the PDF generation happens.
-#     # See the ReportLab documentation for the full list of functionality.
-#     for movement in movements:
-#         text = f"{movement.text} : {movement.amount}"
-#         p.drawString(100, 100, text)
-
-#     # Close the PDF object cleanly, and we're done.
-#     p.showPage()
-#     p.save()
-
-#     # FileResponse sets the Content-Disposition header so that browsers
-#     # present the option to save the file.
-#     buffer.seek(0)
-#     return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
-
-
-# def movements(request, account_id):
-#     movements = Ledger.objects.filter(id_account_fk=account_id)
-#     print(movements)
-#     context = {
-#         'movements': movements
-#     }
-#     return render(request, 'bank_app/movements.html', context)

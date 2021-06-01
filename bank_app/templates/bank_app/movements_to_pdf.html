@@ -1,0 +1,9 @@
+{% extends 'bank_app/base.html' %} {% block content %}
+<h2>Account movements:</h2>
+<ol>
+  {% for movement in movements %}
+  <li>{{ movement.text }} : {{ movement.amount }}</li>
+  <hr />
+  {% endfor %}
+</ol>
+{% endblock %}

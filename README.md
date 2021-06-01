@@ -20,16 +20,10 @@ Create a virtual environment
 python3 -m venv py-env/bank
 ```
 
-activate it
+and activate it
 
 ```bash
 source py-env/bank/bin/activate
-```
-
-install requirements
-
-```bash
-pip install -r requirements.txt
 ```
 
 and run it
@@ -39,14 +33,19 @@ python manage.py runserver
 ```
 
 ### Multi-factor authentication
+As a safety measure for our users, we implemented a two-factor authentication system. 
+
+This feature works together with an authenticator app, therefore it is required to install:
+
+Google Authenticator
+
+After creating an account in the bank app, in order to set up the two-factor authenticator, visit (while logged in):
+
+http://USED-IP-ADDRESS:USED-PORT/account/two_factor/setup/
+
+Scan the QR code using your Google Authenticator app, save the account and now every time you will log in, it will generate a code that will be required in the bank app. 
 
 ### External transfers
-
-In order to create an external transfer, create another copy of the bank in the separate folder, and run in on port 0.0.0.0:8003
-
-```bash
-python3 manage.py runserver 0.0.0.0:8003
-```
 
 ### Additional new features for the bank
 

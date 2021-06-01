@@ -39,8 +39,13 @@ and run it
 python manage.py runserver
 ```
 
+In order to create employee accounts, create a superuser first and then through the admin panel add users to the group "bank_employees".
+
+Through the admin panel you can also set up the accounts for the external transfers. You should create an account "external_transfers" with the password "external123". It is the account that we're authentificating against while doing the external transfer. The first account you should create is the "FOREIGN BANK ACC" with the type "Foreign Bank Account", that belongs to the external_transfers user.
+
 ### Multi-factor authentication
-As a safety measure for our users, we implemented a two-factor authentication system. 
+
+As a safety measure for our users, we implemented a two-factor authentication system.
 
 This feature works together with an authenticator app, therefore it is required to install:
 
@@ -48,7 +53,7 @@ Google Authenticator
 
 After creating an account in the bank app, click on the button saying 'Enable Two Factor Authenticator'.
 
-Scan the QR code using your Google Authenticator app, save the account and now every time you will log in, it will generate a code that will be required in the bank app. 
+Scan the QR code using your Google Authenticator app, save the account and now every time you will log in, it will generate a code that will be required in the bank app.
 
 ### External transfers
 
@@ -58,7 +63,7 @@ In order to make an external transfer, copy the bank into a separate folder and 
 python3 manage.py runserver 0.0.0.0:8003
 ```
 
-### Confirmation Email Sending 
+### Confirmation Email Sending
 
 After each new sign up, the app will try to send a confirmation email to the provided email address. In order for this to happen, you must:
 
@@ -68,7 +73,8 @@ Have your Redis Server running:
 docker run -p 6379:6379 redis
 ```
 
-In a separate terminal, run the Django RQ Worker: 
+In a separate terminal, run the Django RQ Worker:
+
 ```bash
 python manage.py rqworker
 ```

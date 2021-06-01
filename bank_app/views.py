@@ -304,7 +304,7 @@ def external_transfers(request, account_id):
         print(r.text)
 
         # "id_account_fk": the id of the FOREIGN ACC in the other bank
-        pload = {"id_account_fk": 4,
+        pload = {"id_account_fk": 1,
                  "amount": amount, "text": text, "transaction_id": transaction_id}
 
         my_headers = {

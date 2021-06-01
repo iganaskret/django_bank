@@ -49,6 +49,11 @@ Scan the QR code using your Google Authenticator app, save the account and now e
 
 ### External transfers
 
+In order to make an external transfer, copy the bank into a separate folder and run the copy on port 0.0.0.0:8003.
+
+```bash
+python3 manage.py runserver 0.0.0.0:8003
+
 ### Additional new features for the bank
 
 1. Notifier

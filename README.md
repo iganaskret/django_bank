@@ -46,11 +46,7 @@ This feature works together with an authenticator app, therefore it is required 
 
 Google Authenticator
 
-After creating an account in the bank app, in order to set up the two-factor authenticator, visit (while logged in):
-
-```bash
-http://127.0.0.1:8000/account/two_factor/setup/
-```
+After creating an account in the bank app, click on the button saying 'Enable Two Factor Authenticator'.
 
 Scan the QR code using your Google Authenticator app, save the account and now every time you will log in, it will generate a code that will be required in the bank app. 
 
@@ -60,6 +56,21 @@ In order to make an external transfer, copy the bank into a separate folder and 
 
 ```bash
 python3 manage.py runserver 0.0.0.0:8003
+```
+
+### Confirmation Email Sending 
+
+After each new sign up, the app will try to send a confirmation email to the provided email address. In order for this to happen, you must:
+
+Have your Redis Server running:
+
+```bash
+docker run -p 6379:6379 redis
+```
+
+In a separate terminal, run the Django RQ Worker: 
+```bash
+python manage.py rqworker
 ```
 
 ### Additional new features for the bank

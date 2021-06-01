@@ -1,16 +1,18 @@
-"""
-ASGI config for bank_project project.
-
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/3.1/howto/deployment/asgi/
-"""
-
 import os
-
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
+import notifier.routing
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bank_project.settings")
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bank_project.settings')
-
-application = get_asgi_application()
+application = ProtocolTypeRouter({
+    # value of the http - returning value of the asgi app function
+    "http": get_asgi_application(),
+    # value of the ws -  returning value of the AuthMiddlewareStack
+    "websocket": AuthMiddlewareStack(
+        # arguments as URLRouter
+        URLRouter(
+            notifier.routing.websocket_urlpatterns
+        )
+    ),
+})

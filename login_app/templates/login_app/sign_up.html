@@ -23,6 +23,7 @@
           <option value="gold">Gold</option>
       </select>
       <button>Sign Up</button>
+      <a href="{% url 'two_factor:login' %}">Log in</a>
    </form>
    <hr />
    {% if error %}

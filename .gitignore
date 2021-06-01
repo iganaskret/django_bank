@@ -1,1 +1,7 @@
 py-env
+*/__pycache__/*
+*.pyc
+*.pyo
+bank
+db.sqlite3
+README.md

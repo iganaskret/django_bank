@@ -1,12 +1,129 @@
-# django_bank
+## Exam Project - Django Bank App
 
-Group members:
+For our 6th sem. exam we have designed and developed a banking system in Django.
 
-Iga Marianna Naskret, Codrina--Elena Acsinte, Ksawery Karczewski
+### Requirements for starting the project:
 
-For Mandatory Assignment 1 + 2, we have designed and developed a banking system in Django.
+- Docker
+- Google Authenticator
 
-These are the requirements for our system:
+### Project setup:
+
+Clone this git repository in an empty directory
+
+```bash
+https://github.com/iganaskret/django_bank.git
+```
+
+Create a virtual environment
+
+```bash
+python3 -m venv py-env/bank
+```
+
+activate it
+
+```bash
+source py-env/bank/bin/activate
+```
+
+install requirements
+
+```bash
+pip install -r requirements.txt
+```
+
+and run it
+
+```bash
+python manage.py runserver
+```
+
+In order to create employee accounts, create a superuser first and then through the admin panel add users to the group "bank_employees".
+
+Through the admin panel you can also set up the accounts for the external transfers. You should create an account "external_transfers" with the password "external123". It is the account that we're authentificating against while doing the external transfer. The first account you should create is the "FOREIGN BANK ACC" with the type "Foreign Bank Account", that belongs to the external_transfers user.
+
+### Multi-factor authentication
+
+As a safety measure for our users, we implemented a two-factor authentication system.
+
+This feature works together with an authenticator app, therefore it is required to install:
+
+Google Authenticator
+
+After creating an account in the bank app, click on the button saying 'Enable Two Factor Authenticator'.
+
+Scan the QR code using your Google Authenticator app, save the account and now every time you will log in, it will generate a code that will be required in the bank app.
+
+### External transfers
+
+In order to make an external transfer, copy the bank into a separate folder and run the copy on port 0.0.0.0:8003.
+
+```bash
+python3 manage.py runserver 0.0.0.0:8003
+```
+
+### Confirmation Email Sending
+
+After each new sign up, the app will try to send a confirmation email to the provided email address. In order for this to happen, you must:
+
+Have your Redis Server running:
+
+```bash
+docker run -p 6379:6379 redis
+```
+
+In a separate terminal, run the Django RQ Worker:
+
+```bash
+python manage.py rqworker
+```
+
+### Additional new features for the bank
+
+1. Notifier
+
+As our first additional functionality we have build a notifier for bank employees to see newly added users.
+
+For our channel layer in notifier we used Redis (for backing store).
+
+Start a Redis server on port 6379:
+
+```bash
+docker run -p 6379:6379 -d redis:5
+```
+
+Run this command to make sure that the redis image is build. It should be listed as redis:5 image, running on port 0.0.0.0:6379
+
+```bash
+docker container ls
+```
+
+Open these links in seperate browser windows.
+
+```bash
+http://127.0.0.1:8000/notifier/
+```
+
+```bash
+http://127.0.0.1:8000/account/sign_up/
+```
+
+Provide a new user credential and click Sign Up. The new user username should should appear in the notifier tab with the creation time.
+
+2. PDF download
+
+The second functionality allows logged in users to download a PDF with their account movements. In order to convert HTML to PDF, we have used html2pdf converter.
+
+After the log in, click on the SEE MOVEMENTS button. To save you movements as PDF click on the SAVE AS PDF.
+
+### Group members
+
+- Iga Marianna Naskret
+- Codrina--Elena Acsinte
+- Ksawery Karczewski
+
+### 10 requirements for our system:
 
 1. A customer can have any number of bank accounts
 2. For future multi-factor authentication, we must record the customer's telephone number

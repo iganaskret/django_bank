@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,8 @@ SECRET_KEY = '^pvb@5(=4py)jdyoc7+bfyd+jaa@^z-e%2hg$=#d4uaceo=4hb'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['172.104.128.162', '139.162.132.230', '127.0.0.1']
+ALLOWED_HOSTS = ['172.104.128.162',
+                 '139.162.132.230', '127.0.0.1', '0.0.0.0', '*']
 
 
 # Application definition
@@ -39,7 +41,45 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bank_app',
     'login_app',
-    ]
+    'rest_framework',
+    'django_rq',
+    # 'wkhtmltopdf',
+    # 'rest_framework.authtoken',
+    # 'rest_auth',
+
+    # Two Factor Authenthication
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
+    'rest_framework.authtoken',
+    'rest_auth',
+    # 'djmoney',
+    # 'currencies',
+    'notifier',
+    # 3rd party apps
+    'channels',
+]
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'localhost',
+        'PORT': '6379',
+        'DB': 0,
+        'DEFAULT_TIMEOUT': 360,
+    }
+}
+
+# EMAIL SETTINGS
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = False
+EMAIL_HOST = 'smtp-relay.sendinblue.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'codr0040@stud.kea.dk'
+EMAIL_HOST_PASSWORD = 'JxpRLEZzFajOy085'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -47,8 +87,10 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'middleware.middleware.CountRequestsMiddleware'
 ]
 
 ROOT_URLCONF = 'bank_project.urls'
@@ -56,7 +98,7 @@ ROOT_URLCONF = 'bank_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -64,12 +106,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'currencies.context_processors.currencies'
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'bank_project.wsgi.application'
+
+#OPENEXCHANGERATES_APP_ID = 'da893b2db88c4971b75b0e2eba7278da'
 
 
 # Database
@@ -120,3 +165,50 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+LOGIN_URL = 'two_factor:login'
+LOGIN_REDIRECT_URL = 'two_factor:profile'
+# REST_FRAMEWORK = {
+#    'DEFAULT_PERMISSION_CLASSES': [
+#       'bank_app.permissions.IsOwnerOrNoAccess',
+#       'rest_framework.permissions.IsAuthenticated',
+#    ],
+#    'DEFAULT_AUTHENTICATION_CLASSES': [
+#       'rest_framework.authentication.TokenAuthentication',
+#    ]
+# }
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'bank_app.permissions.IsOwnerOrNoAccess',
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+
+# Channels
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("localhost", 6379)],
+#         },
+#     },
+# }
+# bank_project/settings.py
+
+# asgi
+ASGI_APPLICATION = "bank_project.asgi.application"
+# Channels
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('localhost', 6379)],
+        },
+    },
+}

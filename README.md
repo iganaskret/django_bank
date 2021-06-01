@@ -41,7 +41,9 @@ Google Authenticator
 
 After creating an account in the bank app, in order to set up the two-factor authenticator, visit (while logged in):
 
-http://USED-IP-ADDRESS:USED-PORT/account/two_factor/setup/
+```bash
+http://127.0.0.1:8000/account/two_factor/setup/
+```
 
 Scan the QR code using your Google Authenticator app, save the account and now every time you will log in, it will generate a code that will be required in the bank app. 
 

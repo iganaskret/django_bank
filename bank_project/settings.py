@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'login_app',
     'rest_framework',
     'django_rq',
-    'wkhtmltopdf',
+    # 'wkhtmltopdf',
     # 'rest_framework.authtoken',
     # 'rest_auth',
 

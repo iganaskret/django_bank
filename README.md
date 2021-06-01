@@ -12,7 +12,7 @@ For our 6th sem. exam we have designed and developed a banking system in Django.
 Clone this git repository in an empty directory
 
 ```bash
-https://gitlab.com/ksawery_karczewski/todo.git
+https://github.com/iganaskret/django_bank.git
 ```
 
 Create a virtual environment

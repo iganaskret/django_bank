@@ -22,13 +22,13 @@ def login(request):
             context = {
                 'error': 'Bad username or password.'
             }
-    return render(request, 'login_app/login.html', context)
+    return render(request, 'login_app/sign_up.html', context)
 
 
 @login_required
 def logout(request):
     dj_logout(request)
-    return render(request, 'login_app/login.html')
+    return render(request, 'login_app/sign_up.html')
 
 
 def sign_up(request):

@@ -4,3 +4,4 @@ py-env
 *.pyo
 bank
 db.sqlite3
+README.md

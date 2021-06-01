@@ -14,10 +14,15 @@ def login(request):
     if request.method == "POST":
         user = authenticate(
             username=request.POST['username'], password=request.POST['password'])
-        print(user)
-        if user:
+        customer = Customer.objects.filter(user=user)
+        print(customer)
+        if customer:
             dj_login(request, user)
             return HttpResponseRedirect(reverse('bank_app:index'))
+        elif user:
+            dj_login(request, user)
+            return HttpResponseRedirect(reverse('bank_app:employee'))
+
         else:
             context = {
                 'error': 'Bad username or password.'
@@ -63,5 +68,4 @@ def sign_up(request):
             context = {
                 'error': 'Passwords did not match. Please try again.'
             }
-
     return render(request, 'login_app/sign_up.html', context)

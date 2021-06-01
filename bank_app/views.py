@@ -21,10 +21,13 @@ from reportlab.pdfgen import canvas
 
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from .utils import is_bank_employee
 
 
 @login_required
 def index(request):
+    assert not is_bank_employee(
+        request.user), 'Employee tries accessing customer view.'
     customers = Customer.objects.filter(user=request.user)
     print(customers)
     loans = Account.objects.filter(
@@ -41,6 +44,8 @@ def index(request):
 
 
 def employee(request):
+    assert is_bank_employee(
+        request.user), 'Customer tries accessing employee view.'
     customers = Customer.objects.all()
     accounts = Account.objects.all()
     context = {
@@ -51,6 +56,8 @@ def employee(request):
 
 
 def change_rank(request, customer_id):
+    assert is_bank_employee(
+        request.user), 'Customer tries accessing employee view.'
     customer = get_object_or_404(Customer, pk=customer_id)
     context = {'customer': customer}
 
@@ -65,6 +72,8 @@ def change_rank(request, customer_id):
 
 
 def add_customer(request):
+    assert is_bank_employee(
+        request.user), 'Customer tries accessing employee view.'
     context = {}
     if request.method == "POST":
         password = request.POST['password']
@@ -92,6 +101,8 @@ def add_customer(request):
 
 
 def add_account_by_employee(request):
+    assert is_bank_employee(
+        request.user), 'Customer tries accessing employee view.'
     accounts = Account.objects.filter(user=request.user)
     customers = Customer.objects.filter(user=request.user)
     context = {
@@ -113,6 +124,8 @@ def add_account_by_employee(request):
 
 @login_required
 def add_account(request):
+    assert not is_bank_employee(
+        request.user), 'Employee tries accessing customer view.'
     accounts = Account.objects.filter(user=request.user)
     customers = Customer.objects.filter(user=request.user)
     context = {
@@ -135,6 +148,8 @@ def add_account(request):
 
 @login_required
 def movements(request, account_id):
+    assert not is_bank_employee(
+        request.user), 'Employee tries accessing customer view.'
     movements = Ledger.objects.filter(id_account_fk=account_id)
     print(account_id)
     print(movements)
@@ -147,6 +162,8 @@ def movements(request, account_id):
 
 @login_required
 def take_loan(request, customer_id):
+    assert not is_bank_employee(
+        request.user), 'Employee tries accessing customer view.'
     accounts = Account.objects.filter(
         user=request.user).filter(account_type='BANK_ACCOUNT')
     customer = get_object_or_404(Customer, pk=customer_id)
@@ -177,6 +194,8 @@ def take_loan(request, customer_id):
 
 @login_required
 def pay_loan(request, customer_id, loan_id):
+    assert not is_bank_employee(
+        request.user), 'Employee tries accessing customer view.'
     loan = get_object_or_404(Account, pk=loan_id)
     customer = get_object_or_404(Customer, pk=customer_id)
     accounts = Account.objects.filter(
@@ -220,6 +239,8 @@ def pay_loan(request, customer_id, loan_id):
 
 @login_required
 def transfers(request, account_id):
+    assert not is_bank_employee(
+        request.user), 'Employee tries accessing customer view.'
     currentAccount = get_object_or_404(Account, pk=account_id)
     # currentAccount = Account.objects.filter(pk=account_id)
     print(currentAccount)
@@ -250,6 +271,8 @@ def transfers(request, account_id):
 
 @login_required
 def external_transfers(request, account_id):
+    assert not is_bank_employee(
+        request.user), 'Employee tries accessing customer view.'
     currentAccount = get_object_or_404(Account, pk=account_id)
     # currentAccount = Account.objects.filter(pk=account_id)
     allAccounts = Account.objects.exclude(pk=account_id)

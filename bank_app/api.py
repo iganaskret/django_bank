@@ -9,7 +9,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework import status
 import json
 
-# from .permissions import IsOwnerOrNoAccess
+from .permissions import IsOwnerOrNoAccess
 
 
 class AccountList(generics.ListCreateAPIView):
@@ -20,6 +20,7 @@ class AccountList(generics.ListCreateAPIView):
 class AccountDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
+    lookup_field = 'account_number'
 
 
 # class LedgerList(generics.ListCreateAPIView):

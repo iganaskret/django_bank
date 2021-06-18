@@ -10,7 +10,8 @@ from django.http import Http404
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser
 from rest_framework import status
-
+import random
+import string
 from .serializers import ExternalLedgerSerializer, LedgerSerializer
 from rest_framework.decorators import api_view
 import requests
@@ -108,13 +109,25 @@ def add_account_by_employee(request):
     context = {
         'accounts': accounts
     }
+
+    def create_unique_id():
+        return '1'.join(random.choices(string.digits, k=9))
+
+    random_acc_number = create_unique_id()
+    unique = False
+    while not unique:
+        if not Account.objects.filter(account_number=random_acc_number):
+            unique = True
+        else:
+            random_acc_number = create_unique_id()
     if request.method == 'POST':
         account_type = request.POST['account_type']
         account_name = request.POST['name']
         account = Account()
         account.user = request.user
         account.name = account_name
-        account.account_number = "12345678"
+        #account.account_number = "12345678"
+        account.account_number = random_acc_number
         account.account_type = account_type
         account.save()
 
@@ -131,13 +144,25 @@ def add_account(request):
     context = {
         'accounts': accounts
     }
+
+    def create_unique_id():
+        return ''.join(random.choices(string.digits, k=9))
+
+    random_acc_number = create_unique_id()
+    unique = False
+    while not unique:
+        if not Account.objects.filter(account_number=random_acc_number):
+            unique = True
+        else:
+            random_acc_number = create_unique_id()
     if request.method == 'POST':
         account_type = request.POST['account_type']
         account_name = request.POST['name']
         account = Account()
         account.user = request.user
         account.name = account_name
-        account.account_number = "12345678"
+        #account.account_number = "12345678"
+        account.account_number = "1" + random_acc_number
         account.account_type = account_type
         account.save()
 
@@ -282,19 +307,26 @@ def external_transfers(request, account_id):
     }
     if request.method == 'POST':
 
+        local_account = request.POST['fromAccount']
+        foreign_account = request.POST['toAccount']
+        # change in the template so that it's the acc number
+        foreign_fa = request.POST['toForeignBankAccount']
+        local_fa = 1
         amount = request.POST['amount']
-        from_account = request.POST['fromAccount']
-        to_account = request.POST['toForeignBankAccount']
         text = request.POST['text']
         acc_balance = currentAccount.balance
-        foreign_account = request.POST['toAccount']
+
+        local_account_obj = get_object_or_404(Account, pk=local_account)
+        local_account_num = local_account_obj.account_number
 
         externalLedger = ExternalLedger()
-        from_account_obj = get_object_or_404(Account, pk=from_account)
-        externalLedger.localAccount = from_account_obj
-        externalLedger.foreignAccount = foreign_account
-        externalLedger.amount = amount
+        local_fa_obj = get_object_or_404(Account, pk=local_fa)
+        local_fa_num = local_fa_obj.account_number
+        externalLedger.localAccount = local_fa_obj
+        externalLedger.foreignAccount = foreign_fa
+        externalLedger.amount = -int(amount)
         externalLedger.text = text
+        externalLedger.comments = f"from local account with number {local_account_num}"
         transaction_id = uuid.uuid4()
 
         url = 'http://0.0.0.0:8003/accounts/profile/api/v1/rest-auth/login/'
@@ -304,12 +336,17 @@ def external_transfers(request, account_id):
         key = keystring["key"]
         print(f'Token {key}')
 
-        # headers = {
-        #     'Authorization': 'Token 4e3e5662799e6442075ccf23b8435547b8c58f15'}
-        # r = requests.get(url, headers=headers)
+        # GET THE ACCOUNT ID BASED ON THE NUMBER
+        url = f'http://0.0.0.0:8003/accounts/profile/api/v1/accounts/{foreign_account}/'
+        #pload = {"username": "external_transfers", "password": 'external123'}
+        my_headers = {
+            'Authorization': f'Token {key}'}
+        r = requests.get(url, headers=my_headers)
+        account_obj = json.loads(r.text)
+        foreign_account_id = account_obj["id"]
 
-        pload = {"localAccount": foreign_account, "foreignAccount": from_account,
-                 "amount": amount, "text": text}
+        pload = {"localAccount": 1, "foreignAccount": local_fa_num,
+                 "amount": amount, "text": text, "comments": f"to local account with number {foreign_account}"}
 
         my_headers = {
             'Authorization': f'Token {key}'}
@@ -317,7 +354,7 @@ def external_transfers(request, account_id):
             'http://0.0.0.0:8003/accounts/profile/api/v1/external_ledger/', headers=my_headers, data=pload)
         print(r.text)
 
-        pload = {"id_account_fk": from_account,
+        pload = {"id_account_fk": foreign_account_id,
                  "amount": amount, "text": text, "transaction_id": transaction_id}
 
         my_headers = {
@@ -328,7 +365,7 @@ def external_transfers(request, account_id):
 
         # "id_account_fk": the id of the FOREIGN ACC in the other bank
         pload = {"id_account_fk": 1,
-                 "amount": amount, "text": text, "transaction_id": transaction_id}
+                 "amount": -int(amount), "text": text, "transaction_id": transaction_id}
 
         my_headers = {
             'Authorization': f'Token {key}'}
@@ -337,7 +374,7 @@ def external_transfers(request, account_id):
         print(r.text)
 
         if acc_balance >= int(amount):
-            Ledger.transaction(int(amount), from_account, to_account, text)
+            Ledger.transaction(int(amount), local_account, local_fa, text)
             externalLedger.save()
             return redirect('bank_app:index')
         else:
@@ -365,6 +402,17 @@ def api_transfers(request):
         ledger_serializer.save()
         return JsonResponse(ledger_serializer.data, status=status.HTTP_201_CREATED)
     return JsonResponse(ledger_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# @api_view(['GET'])
+# def account_detail(request, pk):
+#     """
+#     Retrieve, update or delete a code snippet.
+#     """
+#     try:
+#         account = Account.objects.get(pk=pk)
+#     except Account.DoesNotExist:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 @login_required

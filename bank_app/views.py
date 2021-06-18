@@ -310,8 +310,8 @@ def external_transfers(request, account_id):
         local_account = request.POST['fromAccount']
         foreign_account = request.POST['toAccount']
         # change in the template so that it's the acc number
-        foreign_fa = request.POST['toForeignBankAccount']
         local_fa = 1
+        foreign_fa = request.POST['toForeignBankAccount']
         amount = request.POST['amount']
         text = request.POST['text']
         acc_balance = currentAccount.balance

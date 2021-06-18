@@ -48,11 +48,22 @@ class Account(models.Model):
     def balance(self):
         ledger_sum = Ledger.objects.filter(
             id_account_fk=self.id).aggregate(Sum('amount'))
+        external_ledger_sum = ExternalLedger.objects.filter(
+            localAccount=self.id).aggregate(Sum('amount'))
+
         for key, value in ledger_sum.items():
             if value == None:
-                return 0
+                balance = 0
             else:
-                return value
+                balance = value
+
+        for key, value in external_ledger_sum.items():
+            if value == None:
+                external_balance = 0
+            else:
+                external_balance = value
+
+        return balance + external_balance
 
     def __str__(self):
         return f"{self.name} - {self.id} - {self.user.id} - {self.balance}"
@@ -91,6 +102,7 @@ class ExternalLedger(models.Model):
     foreignAccount = models.CharField(max_length=100, blank=False)
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     text = models.CharField(max_length=20)
+    comments = models.CharField(max_length=100)
     date_created = models.DateTimeField(auto_now_add=True)
     #transaction_id = models.CharField(max_length=100, blank=True)
 

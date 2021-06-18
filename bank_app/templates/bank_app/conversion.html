@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'bank_app/bank_app.css' %}" media="screen" />
+    <title>Conversion</title>
+</head>
+
+<body>
+    <h1>Conversion rates</h1>
+
+    <form action={% url 'bank_app:conversion' %} method="POST">
+
+        {% csrf_token %}
+        <input type="number" name="amount" id="amount" value=1></input>
+        <select name="currency_from" id="currency_from">
+            <option value=DKK>DKK</option>
+            <!-- <option value=EUR>EUR</option> -->
+            <option value=USD>USD</option>
+            <option value=JPY>JPY</option>
+            <option value=BGN>BGN</option>
+            <option value=CZK>CZK</option>
+            <option value=GBP>GBP</option>
+            <option value=HUF>HUF</option>
+            <option value=PLN>PLN</option>
+            <option value=RON>RON</option>
+            <option value=SEK>SEK</option>
+            <option value=CHF>CHF</option>
+            <option value=ISK>ISK</option>
+            <option value=NOK>NOK</option>
+            <option value=HRK>HRK</option>
+            <option value=RUB>RUB</option>
+            <option value=TRY>TRY</option>
+            <option value=AUD>AUD</option>
+            <option value=BRL>BRL</option>
+            <option value=CAD>CAD</option>
+            <option value=CNY>CNY</option>
+            <option value=HKD>HKD</option>
+            <option value=IDR>IDR</option>
+            <option value=INR>INR</option>
+            <option value=KRW>KRW</option>
+            <option value=MXN>MXN</option>
+            <option value=MYR>MYR</option>
+            <option value=NZD>NZD</option>
+            <option value=PHP>PHP</option>
+            <option value=SGD>SGD</option>
+            <option value=THB>THB</option>
+            <option value=ZAR>ZAR</option>
+        </select>
+        <select name="currency_to" id="currency_to">
+            <option value=DKK>DKK</option>
+            <option value=EUR>EUR</option>
+            <option value=USD>USD</option>
+            <option value=JPY>JPY</option>
+            <option value=BGN>BGN</option>
+            <option value=CZK>CZK</option>
+            <option value=GBP>GBP</option>
+            <option value=HUF>HUF</option>
+            <option value=PLN>PLN</option>
+            <option value=RON>RON</option>
+            <option value=SEK>SEK</option>
+            <option value=CHF>CHF</option>
+            <option value=ISK>ISK</option>
+            <option value=NOK>NOK</option>
+            <option value=HRK>HRK</option>
+            <option value=RUB>RUB</option>
+            <option value=TRY>TRY</option>
+            <option value=AUD>AUD</option>
+            <option value=BRL>BRL</option>
+            <option value=CAD>CAD</option>
+            <option value=CNY>CNY</option>
+            <option value=HKD>HKD</option>
+            <option value=IDR>IDR</option>
+            <option value=INR>INR</option>
+            <option value=KRW>KRW</option>
+            <option value=MXN>MXN</option>
+            <option value=MYR>MYR</option>
+            <option value=NZD>NZD</option>
+            <option value=PHP>PHP</option>
+            <option value=SGD>SGD</option>
+            <option value=THB>THB</option>
+            <option value=ZAR>ZAR</option>
+        </select>
+        <button type="submit" style="display: block; margin-top: 20px">
+            Convert
+        </button>
+    </form>
+
+    {% if conversion %}
+    {% if inputamount %}
+    {% if currency_from %}
+    {% if currency_to %}
+    <p>{{ inputamount }} {{ currency_from }} = {{ conversion }} {{currency_to}}</p>
+
+    {% endif %}
+    {% endif %}
+    {% endif %}
+    {% endif %}
+
+    {% for account in accounts %}
+    <a href={% url 'bank_app:transfers' account_id=account.id %}>go back</a>
+    {% endfor %}
+    {% block content %} {% endblock %}
+    {% block footer %} {% endblock %}
+
+</body>
+
+</html>

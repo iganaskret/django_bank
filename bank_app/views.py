@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
+from forex_python.converter import CurrencyRates
 import uuid
 import json
 from django.http import Http404
@@ -41,6 +42,29 @@ def index(request):
     }
     print(loans, accounts)
     return render(request, 'bank_app/index.html', context)
+
+@login_required
+def conversion(request):
+    context = {}
+    if request.method == 'POST':
+        currency_from = request.POST['currency_from']
+        currency_to = request.POST['currency_to']
+        amount = float(request.POST['amount'])
+        accounts = Account.objects.filter(
+            user=request.user).filter(account_type='BANK_ACCOUNT')
+        c = CurrencyRates()
+        conversion = c.convert(currency_from, currency_to, amount)
+        context = {
+            'inputamount': amount,
+            'currency_from': currency_from,
+            'currency_to': currency_to,
+            'conversion': conversion,
+            'accounts': accounts
+
+        }
+
+        # return redirect('bank_app:index')
+    return render(request, 'bank_app/conversion.html', context)
 
 
 def employee(request):

@@ -11,7 +11,7 @@
     </select>
     <input type="number" name="amount" id="amount" placeholder="amount">
     <input name="text" id="text" placeholder="text">
-    <button type="submit">transfer</button>
+    <button>>transfer</button>
 </form>
 {% if error %}
       <p> {{ error }}</p>
@@ -36,6 +36,8 @@
     <input name="text" id="text" placeholder="text">
     <button type="submit"> external transfer</button>
 </form>
+    
+    <button  onclick="location.href = '/accounts/profile/conversion'"> conversion rates</button>
 {% if error %}
       <p> {{ error }}</p>
 {% endif %}

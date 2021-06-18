@@ -43,6 +43,21 @@ def index(request):
     print(loans, accounts)
     return render(request, 'bank_app/index.html', context)
 
+
+@login_required
+def isEmployee(request):
+    if is_bank_employee(request.user):
+        employee = True
+    else:
+        employee = False
+
+    context = {
+        'employee': employee
+    }
+
+
+    return render(request, 'two_factor/profile.html', context)
+
 @login_required
 def conversion(request):
     context = {}

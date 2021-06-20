@@ -11,10 +11,14 @@ from channels.layers import get_channel_layer
 # event handler (standard argument list)
 def announce_new_user(sender, instance, created, **kwargs):
     if created:
+        # retriving the channel layer
         channel_layer = get_channel_layer()
         # send message to channel layer in form of the broadcast - group send
         # async_to_sync converst it
         async_to_sync(channel_layer.group_send)(
-            "gossip", {"type": "user.gossip",
-                       "event": "New User",
-                       "username": instance.username})
+            "notification", {
+                "type": "user.notification",
+                "event": "New User",
+                "username": instance.username
+            }
+        )

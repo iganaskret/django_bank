@@ -34,82 +34,11 @@
     <button type="submit"> external transfer</button>
 </form>
     
-    <button  onclick="location.href = '/accounts/profile/conversion'"> conversion rates</button>
-{% if error %}
-      <p> {{ error }}</p>
+    <!-- <button  onclick="location.href = '/accounts/profile/conversion'"> conversion rates</button> -->
+    <a href={% url 'bank_app:conversion' account_id=currentAccount.pk %}>conversion rates</a>
+{% if external_error %}
+      <p> {{ external_error }}</p>
 {% endif %}
 <a href={% url 'bank_app:index' %}>go back</a>
-
-<script>
-
-// function getCookie(name) {
-//     var cookieValue = null;
-//     if (document.cookie && document.cookie !== '') {
-//         var cookies = document.cookie.split(';');
-//         for (var i = 0; i < cookies.length; i++) {
-//             var cookie = cookies[i].trim();
-//             // Does this cookie string begin with the name we want?
-//             if (cookie.substring(0, name.length + 1) === (name + '=')) {
-//                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-//                 break;
-//             }
-//         }
-//     }
-//     return cookieValue;
-// }
-// var csrftoken = getCookie('csrftoken');
-
-// function uuidv4() {
-//   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-//     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-//     return v.toString(16);
-//   });
-// }
-
-// const iud = uuidv4()
-// var csrftoken = getCookie('csrftoken');
-// let fromAccount = document.querySelector("#transfer-externally #fromAccount").value;
-// let toAccount = document.querySelector("#transfer-externally #toAccount").value;
-// let amount = document.querySelector("#transfer-externally #amount").value;
-// let text = document.querySelector("#transfer-externally #text").value;
-
-// async function externalTransfer() {
-//     incomingTransfer()
-//     transferView();
-// }
-
-// async function incomingTransfer() {
-//     // adding to the ledger of the OTHER bank
-
-//     var headers = new Headers();
-//     // ADD AUTHENTIFICATION
-//     headers.append("Authorization", "Token c12b03dc0013a1e99a0a3c4a38221ee300eb8518");
-//     headers.append("X-CSRFToken", csrftoken);
-
-
-//     var formdata = new FormData();
-//     formdata.append("account", fromAccount);
-//     formdata.append("amount", `-${amount}`);
-//     formdata.append("text", text);
-//     formdata.append("transaction_id", iud);
-//     var request = {
-//         method: 'POST',
-//         headers: headers,
-//         body: formdata,
-//         redirect: 'follow'
-//     };
-//     var connection = await fetch(`http://0.0.0.0:8003/bank/api/v1/ledger/`, request)
-//     if (!connection.ok) {
-//         console.log("connection 1 failed");
-//         return;
-//     }
-//     var response = await connection.json();
-//     console.log(response);
-// }
-
-
-// </script>
-
-
 
 {% endblock %}

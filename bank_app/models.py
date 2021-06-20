@@ -47,7 +47,7 @@ class Account(models.Model):
     @property
     def balance(self):
         ledger_sum = Ledger.objects.filter(
-            id_account_fk=self.id).aggregate(Sum('amount'))
+            account=self.id).aggregate(Sum('amount'))
         external_ledger_sum = ExternalLedger.objects.filter(
             localAccount=self.id).aggregate(Sum('amount'))
 
@@ -70,7 +70,7 @@ class Account(models.Model):
 
 
 class Ledger(models.Model):
-    id_account_fk = models.ForeignKey(
+    account = models.ForeignKey(
         'Account', on_delete=models.CASCADE, related_name="ledger")
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     text = models.CharField(max_length=20)
@@ -78,7 +78,7 @@ class Ledger(models.Model):
     transaction_id = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
-        return f"{self.id_account_fk.id} - {self.amount} -  {self.text} - {self.transaction_id}"
+        return f"{self.account.id} - {self.amount} -  {self.text} - {self.transaction_id}"
 
     @classmethod
     @transaction.atomic
@@ -86,12 +86,12 @@ class Ledger(models.Model):
         id = uuid.uuid4()
         sender_account = get_object_or_404(Account, pk=from_account)
         ledger = Ledger()
-        ledger = cls(id_account_fk=sender_account, amount=-
+        ledger = cls(account=sender_account, amount=-
                      amount, text=text, transaction_id=id)
         ledger.save()
         receiver_account = get_object_or_404(Account, pk=to_account)
         ledger = Ledger()
-        ledger = cls(id_account_fk=receiver_account,
+        ledger = cls(account=receiver_account,
                      amount=amount, text=text, transaction_id=id)
         ledger.save()
 
@@ -101,10 +101,9 @@ class ExternalLedger(models.Model):
         'Account', on_delete=models.CASCADE, related_name="external_ledger")
     foreignAccount = models.CharField(max_length=100, blank=False)
     amount = models.DecimalField(max_digits=20, decimal_places=2)
-    text = models.CharField(max_length=20)
+    text = models.CharField(max_length=100)
     comments = models.CharField(max_length=100)
     date_created = models.DateTimeField(auto_now_add=True)
-    #transaction_id = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
         return f"{self.localAccount.name} - {self.foreignAccount} -  {self.amount} -  {self.text}"

@@ -8,7 +8,7 @@ from .api import AccountList, AccountDetail, LedgerList, LedgerDetail, ExternalL
 app_name = 'bank_app'
 urlpatterns = [
     path('', views.index, name='index'),
-    path('conversion', views.conversion, name='conversion'),
+    path('conversion/<account_id>/', views.conversion, name='conversion'),
     path('pay_loan/<customer_id>/<loan_id>', views.pay_loan, name='pay_loan'),
     path('employee', views.employee, name='employee'),
     path('take_loan/<customer_id>', views.take_loan, name='take_loan'),

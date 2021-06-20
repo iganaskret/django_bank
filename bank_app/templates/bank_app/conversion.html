@@ -12,7 +12,7 @@
 <body>
     <h1>Conversion rates</h1>
 
-    <form action={% url 'bank_app:conversion' %} method="POST">
+    <form action={% url 'bank_app:conversion' account_id=account_id %} method="POST">
 
         {% csrf_token %}
         <input type="number" name="amount" id="amount" value=1></input>
@@ -100,9 +100,8 @@
     {% endif %}
     {% endif %}
 
-    {% for account in accounts %}
-    <a href={% url 'bank_app:transfers' account_id=account.id %}>go back</a>
-    {% endfor %}
+    <a href={% url 'bank_app:transfers' account_id=account_id %}>go back</a>
+    
     {% block content %} {% endblock %}
     {% block footer %} {% endblock %}
 

@@ -56,18 +56,20 @@ def isEmployee(request):
         'employee': employee
     }
 
-
     return render(request, 'two_factor/profile.html', context)
 
+
 @login_required
-def conversion(request):
-    context = {}
+def conversion(request, account_id):
+    context = {
+        'account_id': account_id
+    }
     if request.method == 'POST':
         currency_from = request.POST['currency_from']
         currency_to = request.POST['currency_to']
         amount = float(request.POST['amount'])
-        accounts = Account.objects.filter(
-            user=request.user).filter(account_type='BANK_ACCOUNT')
+        account = Account.objects.filter(
+            pk=account_id).filter(account_type='BANK_ACCOUNT')
         c = CurrencyRates()
         conversion = c.convert(currency_from, currency_to, amount)
         context = {
@@ -75,7 +77,7 @@ def conversion(request):
             'currency_from': currency_from,
             'currency_to': currency_to,
             'conversion': conversion,
-            'accounts': accounts
+            'account_id': account_id
 
         }
 
@@ -214,7 +216,7 @@ def add_account(request):
 def movements(request, account_id):
     assert not is_bank_employee(
         request.user), 'Employee tries accessing customer view.'
-    movements = Ledger.objects.filter(id_account_fk=account_id)
+    movements = Ledger.objects.filter(account=account_id)
     print(account_id)
     print(movements)
     context = {
@@ -337,82 +339,88 @@ def transfers(request, account_id):
 def external_transfers(request, account_id):
     assert not is_bank_employee(
         request.user), 'Employee tries accessing customer view.'
+
     currentAccount = get_object_or_404(Account, pk=account_id)
-    # currentAccount = Account.objects.filter(pk=account_id)
     allAccounts = Account.objects.exclude(pk=account_id)
     context = {
         'currentAccount': currentAccount,
         'allAccounts': allAccounts
     }
-    if request.method == 'POST':
 
+    if request.method == 'POST':
         local_account = request.POST['fromAccount']
         foreign_account = request.POST['toAccount']
-        # change in the template so that it's the acc number
         local_fa = 1
         foreign_fa = request.POST['toForeignBankAccount']
         amount = request.POST['amount']
         text = request.POST['text']
         acc_balance = currentAccount.balance
+        transaction_id = uuid.uuid4()
 
         local_account_obj = get_object_or_404(Account, pk=local_account)
         local_account_num = local_account_obj.account_number
 
-        externalLedger = ExternalLedger()
-        local_fa_obj = get_object_or_404(Account, pk=local_fa)
-        local_fa_num = local_fa_obj.account_number
-        externalLedger.localAccount = local_fa_obj
-        externalLedger.foreignAccount = foreign_fa
-        externalLedger.amount = -int(amount)
-        externalLedger.text = text
-        externalLedger.comments = f"from local account with number {local_account_num}"
-        transaction_id = uuid.uuid4()
-
-        url = 'http://0.0.0.0:8003/accounts/profile/api/v1/rest-auth/login/'
-        pload = {"username": "external_transfers", "password": 'external123'}
-        r = requests.post(url, data=pload)
-        keystring = json.loads(r.text)
-        key = keystring["key"]
-        print(f'Token {key}')
-
-        # GET THE ACCOUNT ID BASED ON THE NUMBER
-        url = f'http://0.0.0.0:8003/accounts/profile/api/v1/accounts/{foreign_account}/'
-        #pload = {"username": "external_transfers", "password": 'external123'}
-        my_headers = {
-            'Authorization': f'Token {key}'}
-        r = requests.get(url, headers=my_headers)
-        account_obj = json.loads(r.text)
-        foreign_account_id = account_obj["id"]
-
-        pload = {"localAccount": 1, "foreignAccount": local_fa_num,
-                 "amount": amount, "text": text, "comments": f"to local account with number {foreign_account}"}
-
-        my_headers = {
-            'Authorization': f'Token {key}'}
-        r = requests.post(
-            'http://0.0.0.0:8003/accounts/profile/api/v1/external_ledger/', headers=my_headers, data=pload)
-        print(r.text)
-
-        pload = {"id_account_fk": foreign_account_id,
-                 "amount": amount, "text": text, "transaction_id": transaction_id}
-
-        my_headers = {
-            'Authorization': f'Token {key}'}
-        r = requests.post(
-            'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload)
-        print(r.text)
-
-        # "id_account_fk": the id of the FOREIGN ACC in the other bank
-        pload = {"id_account_fk": 1,
-                 "amount": -int(amount), "text": text, "transaction_id": transaction_id}
-
-        my_headers = {
-            'Authorization': f'Token {key}'}
-        r = requests.post(
-            'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload)
-        print(r.text)
-
+        # Checking if there are sufficient funds in the account
         if acc_balance >= int(amount):
+
+            externalLedger = ExternalLedger()
+            local_fa_obj = get_object_or_404(Account, pk=local_fa)
+            local_fa_num = local_fa_obj.account_number
+            externalLedger.localAccount = local_fa_obj
+            externalLedger.foreignAccount = foreign_fa
+            externalLedger.amount = -int(amount)
+            externalLedger.text = text
+            externalLedger.comments = f"from local account with number {local_account_num}"
+
+            # Obtaining the Authentification Token
+            url = 'http://0.0.0.0:8003/accounts/profile/api/v1/rest-auth/login/'
+            pload = {"username": "external_transfers",
+                     "password": 'external123'}
+            r = requests.post(url, data=pload)
+            keystring = json.loads(r.text)
+            key = keystring["key"]
+
+            # Checking if the receiver account exist and getting the account id based on the number
+            url = f'http://0.0.0.0:8003/accounts/profile/api/v1/accounts/{foreign_account}/'
+            my_headers = {
+                'Authorization': f'Token {key}'}
+            r = requests.get(url, headers=my_headers)
+            if r.status_code == 404:
+                context = {
+                    'currentAccount': currentAccount,
+                    'allAccounts': allAccounts,
+                    'external_error': 'account does not exist'
+                }
+                return render(request, 'bank_app/transfers.html', context)
+
+            account_obj = json.loads(r.text)
+            foreign_account_id = account_obj["id"]
+
+            # Saving in the External Ledger of the foreign bank
+            pload = {"localAccount": foreign_fa, "foreignAccount": local_fa_num,
+                     "amount": amount, "text": text, "comments": f"to local account with number {foreign_account}"}
+            my_headers = {
+                'Authorization': f'Token {key}'}
+            r = requests.post(
+                'http://0.0.0.0:8003/accounts/profile/api/v1/external_ledger/', headers=my_headers, data=pload)
+            print(r.text)
+
+            # Saving in the Ledger of the foreign bank
+            pload1 = {"account": foreign_account_id,
+                      "amount": amount, "text": text, "transaction_id": transaction_id}
+            # "account": the id of the FOREIGN ACC in the other bank
+            pload2 = {"account": 1,
+                      "amount": -int(amount), "text": text, "transaction_id": transaction_id}
+            my_headers = {
+                'Authorization': f'Token {key}'}
+            r1 = requests.post(
+                'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload1)
+            r2 = requests.post(
+                'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload2)
+            print(r1.text)
+            print(r2.text)
+
+            # Saving in the Ledger and External Ledger in the local bank
             Ledger.transaction(int(amount), local_account, local_fa, text)
             externalLedger.save()
             return redirect('bank_app:index')
@@ -432,7 +440,6 @@ def api_transfers(request):
         data=request.data, many=True)
     ledger_serializer = LedgerSerializer(
         data=request.data, many=True)
-    # print(request.auth)
 
     if external_ledger_serializer.is_valid():
         external_ledger_serializer.save()
@@ -443,20 +450,9 @@ def api_transfers(request):
     return JsonResponse(ledger_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# @api_view(['GET'])
-# def account_detail(request, pk):
-#     """
-#     Retrieve, update or delete a code snippet.
-#     """
-#     try:
-#         account = Account.objects.get(pk=pk)
-#     except Account.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-
-
 @login_required
 def pdf(request, account_id):
-    movements = Ledger.objects.filter(id_account_fk=account_id)
+    movements = Ledger.objects.filter(account=account_id)
 
     template_path = 'bank_app/movements_to_pdf.html'
     context = {'movements': movements, "account_id": account_id}
@@ -470,7 +466,7 @@ def pdf(request, account_id):
     # create a pdf
     pisa_status = pisa.CreatePDF(
         html, dest=response)
-    # if error then show some funy view
+    # if error
     if pisa_status.err:
         return HttpResponse('We had some errors <pre>' + html + '</pre>')
     return response

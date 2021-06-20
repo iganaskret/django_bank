@@ -22,7 +22,7 @@ class LedgerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ledger
-        fields = ('id_account_fk', 'amount', 'text')
+        fields = ('account', 'amount', 'text', 'transaction_id')
         extra_kwargs = {"pk": {"read_only": False}}
 
 

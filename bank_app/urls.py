@@ -1,9 +1,9 @@
-from django.contrib import admin
+"""bank_app urlpatterns"""
 from django.urls import path, include
-#from rest_framework.authtoken import views
-
 from . import views
-from .api import AccountList, AccountDetail, LedgerList, LedgerDetail, ExternalLedgerList, ExternalLedgerDetail
+from .api import AccountList, LedgerList, ExternalLedgerList
+from .api import AccountDetail, LedgerDetail, ExternalLedgerDetail
+
 
 app_name = 'bank_app'
 urlpatterns = [
@@ -22,13 +22,14 @@ urlpatterns = [
          views.external_transfers, name='external_transfers'),
     path('movements/<account_id>/', views.movements, name='movements'),
     path('pdf/<account_id>/', views.pdf, name='pdf'),
-    # path('api/v1/add5to/<int:pk>/', TBDNAME.as_view()),
-    path('api/v1/accounts/', AccountList.as_view()),
-    path('api/v1/accounts/<account_number>/', AccountDetail.as_view()),
-    path('api/v1/ledger/', LedgerList.as_view()),
-    path('api/v1/external_ledger/', ExternalLedgerList.as_view()),
-    path('api/v1/ledger/<int:pk>/', LedgerDetail.as_view()),
-    path('api/v1/external_ledger/<int:pk>/', ExternalLedgerDetail.as_view()),
-    path('api/v1/rest-auth/', include('rest_auth.urls')),
-    #path('api-token-auth/', views.obtain_auth_token)
+
+    path('api/v1/', include([
+         path('accounts/', AccountList.as_view()),
+         path('accounts/<account_number>/', AccountDetail.as_view()),
+         path('ledger/', LedgerList.as_view()),
+         path('external_ledger/', ExternalLedgerList.as_view()),
+         path('ledger/<int:pk>/', LedgerDetail.as_view()),
+         path('external_ledger/<int:pk>/', ExternalLedgerDetail.as_view()),
+         path('rest-auth/', include('rest_auth.urls')),
+         ])),
 ]

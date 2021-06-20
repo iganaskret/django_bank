@@ -1,7 +1,9 @@
+"""email functionality"""
 from django.core.mail import send_mail
 
 
 def email_message(message_dict):
+    """email content"""
     contents = f"""
    Welcome to Group4 Bank! A new account was created using this email address.
    For extra safety with your account, we recommend that you set up the Two Factor Authenticator at:

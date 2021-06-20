@@ -1,14 +1,18 @@
-from bank_app.models import Customer
+"""login_app web requests and web responses"""
 from django.shortcuts import render, reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as dj_login, logout as dj_logout
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 import django_rq
+
+from bank_app.models import Customer
+
 from . messaging import email_message
 
 
 def login(request):
+    """return HTML based on user credentials"""
     context = {}
 
     if request.method == "POST":
@@ -19,24 +23,25 @@ def login(request):
         if customer:
             dj_login(request, user)
             return HttpResponseRedirect(reverse('bank_app:index'))
-        elif user:
+        if user:
             dj_login(request, user)
             return HttpResponseRedirect(reverse('bank_app:employee'))
 
-        else:
-            context = {
-                'error': 'Bad username or password.'
-            }
+        context = {
+            'error': 'Bad username or password.'
+        }
     return render(request, 'login_app/sign_up.html', context)
 
 
 @login_required
 def logout(request):
+    """redirect to sign up HTML on logout"""
     dj_logout(request)
     return render(request, 'login_app/sign_up.html')
 
 
 def sign_up(request):
+    """sign up user"""
     context = {}
     if request.method == "POST":
         password = request.POST['password']
@@ -48,11 +53,20 @@ def sign_up(request):
         rank = request.POST['rank']
         username = request.POST['username']
         user = User.objects.create_user(
-            email=email, username=username, password=password, first_name=first_name, last_name=last_name)
+            email=email,
+            username=username,
+            password=password,
+            first_name=first_name,
+            last_name=last_name
+        )
         # new_user= User(username=username, first_name=first_name, last_name=last_name, email=email, password=password)
         # new_user.save()
         if password == confirm_password:
-            if Customer.objects.create(user=user, phone_number=phone, rank=rank):
+            if Customer.objects.create(
+                user=user,
+                phone_number=phone,
+                rank=rank
+            ):
                 django_rq.enqueue(email_message, {
                     'email': email,
                     'username': username,

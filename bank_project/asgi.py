@@ -1,8 +1,11 @@
+"""Root routing configuration for Channels.
+Tells what code to run when an HTTP request is received by the Channels server"""
 import os
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
 import notifier.routing
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bank_project.settings")
 
 application = ProtocolTypeRouter({

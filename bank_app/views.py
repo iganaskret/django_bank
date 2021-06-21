@@ -431,20 +431,20 @@ def external_transfers(request, account_id):
     return render(request, 'bank_app/transfers.html', context)
 
 
-@api_view(['POST'])
-def api_transfers(request):
-    external_ledger_serializer = ExternalLedgerSerializer(
-        data=request.data, many=True)
-    ledger_serializer = LedgerSerializer(
-        data=request.data, many=True)
+# @api_view(['POST'])
+# def api_transfers(request):
+#     external_ledger_serializer = ExternalLedgerSerializer(
+#         data=request.data, many=True)
+#     ledger_serializer = LedgerSerializer(
+#         data=request.data, many=True)
 
-    if external_ledger_serializer.is_valid():
-        external_ledger_serializer.save()
-        return JsonResponse(external_ledger_serializer.data, status=status.HTTP_201_CREATED)
-    elif ledger_serializer.is_valid():
-        ledger_serializer.save()
-        return JsonResponse(ledger_serializer.data, status=status.HTTP_201_CREATED)
-    return JsonResponse(ledger_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     if external_ledger_serializer.is_valid():
+#         external_ledger_serializer.save()
+#         return JsonResponse(external_ledger_serializer.data, status=status.HTTP_201_CREATED)
+#     elif ledger_serializer.is_valid():
+#         ledger_serializer.save()
+#         return JsonResponse(ledger_serializer.data, status=status.HTTP_201_CREATED)
+#     return JsonResponse(ledger_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @login_required

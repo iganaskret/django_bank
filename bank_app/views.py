@@ -379,6 +379,8 @@ def external_transfers(request, account_id):
             r = requests.post(url, data=pload)
             keystring = json.loads(r.text)
             key = keystring["key"]
+            my_headers = {
+                'Authorization': f'Token {key}'}
 
             # Checking if the receiver account exist and getting the account id based on the number
             url = f'http://0.0.0.0:8003/accounts/profile/api/v1/accounts/{foreign_account}/'
@@ -399,8 +401,6 @@ def external_transfers(request, account_id):
             # Saving in the External Ledger of the foreign bank
             pload = {"localAccount": foreign_fa, "foreignAccount": local_fa_num,
                      "amount": amount, "text": text, "comments": f"to local account with number {foreign_account}"}
-            my_headers = {
-                'Authorization': f'Token {key}'}
             r = requests.post(
                 'http://0.0.0.0:8003/accounts/profile/api/v1/external_ledger/', headers=my_headers, data=pload)
             print(r.text)
@@ -411,14 +411,11 @@ def external_transfers(request, account_id):
             # "account": the id of the FOREIGN ACC in the other bank
             pload2 = {"account": 1,
                       "amount": -int(amount), "text": text, "transaction_id": transaction_id}
-            my_headers = {
-                'Authorization': f'Token {key}'}
             r1 = requests.post(
                 'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload1)
             r2 = requests.post(
                 'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload2)
-            print(r1.text)
-            print(r2.text)
+
 
             # Saving in the Ledger and External Ledger in the local bank
             Ledger.transaction(int(amount), local_account, local_fa, text)

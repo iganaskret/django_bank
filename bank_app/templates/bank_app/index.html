@@ -3,7 +3,7 @@
    <ul>
     {% for account in accounts %}
 
-    <li>{{ account.name }}, {{ account.id }}: {{ account.balance }} dkk</li>
+    <li>{{ account.name }}, {{ account.account_number }}: {{ account.balance }} dkk</li>
       <a href={% url 'bank_app:movements' account_id=account.id %}>see movements</a>
 <a href="{% url 'bank_app:transfers' account_id=account.id %}">Make a transfer</a>
     {% endfor %}

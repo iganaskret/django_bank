@@ -8,26 +8,26 @@ import django_rq
 from . messaging import email_message
 
 
-def login(request):
-    context = {}
+# def login(request):
+#     context = {}
 
-    if request.method == "POST":
-        user = authenticate(
-            username=request.POST['username'], password=request.POST['password'])
-        customer = Customer.objects.filter(user=user)
-        print(customer)
-        if customer:
-            dj_login(request, user)
-            return HttpResponseRedirect(reverse('bank_app:index'))
-        elif user:
-            dj_login(request, user)
-            return HttpResponseRedirect(reverse('bank_app:employee'))
+#     if request.method == "POST":
+#         user = authenticate(
+#             username=request.POST['username'], password=request.POST['password'])
+#         # customer = Customer.objects.filter(user=user)
+#         # print(customer)
+#         # if customer:
+#         #     dj_login(request, user)
+#         #     return HttpResponseRedirect(reverse('bank_app:index'))
+#         # elif user:
+#         #     dj_login(request, user)
+#         #     return HttpResponseRedirect(reverse('bank_app:employee'))
 
-        else:
-            context = {
-                'error': 'Bad username or password.'
-            }
-    return render(request, 'login_app/sign_up.html', context)
+#         # else:
+#         context = {
+#             'error': 'Bad username or password.'
+#         }
+#     return render(request, 'login_app/sign_up.html', context)
 
 
 @login_required

@@ -47,11 +47,11 @@ def sign_up(request):
         phone = request.POST['phone']
         rank = request.POST['rank']
         username = request.POST['username']
-        user = User.objects.create_user(
-            email=email, username=username, password=password, first_name=first_name, last_name=last_name)
         # new_user= User(username=username, first_name=first_name, last_name=last_name, email=email, password=password)
         # new_user.save()
         if password == confirm_password:
+            user = User.objects.create_user(
+                email=email, username=username, password=password, first_name=first_name, last_name=last_name)
             if Customer.objects.create(user=user, phone_number=phone, rank=rank):
                 django_rq.enqueue(email_message, {
                     'email': email,

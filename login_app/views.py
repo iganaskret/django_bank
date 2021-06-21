@@ -1,3 +1,4 @@
+"""login_app web requests and web responses"""
 from bank_app.models import Customer
 from django.shortcuts import render, reverse
 from django.contrib.auth.models import User
@@ -8,35 +9,37 @@ import django_rq
 from . messaging import email_message
 
 
-# def login(request):
-#     context = {}
+def login(request):
+    context = {}
+    return render(request, 'login_app/sign_up.html', context)
 
-#     if request.method == "POST":
-#         user = authenticate(
-#             username=request.POST['username'], password=request.POST['password'])
-#         # customer = Customer.objects.filter(user=user)
-#         # print(customer)
-#         # if customer:
-#         #     dj_login(request, user)
-#         #     return HttpResponseRedirect(reverse('bank_app:index'))
-#         # elif user:
-#         #     dj_login(request, user)
-#         #     return HttpResponseRedirect(reverse('bank_app:employee'))
+    # if request.method == "POST":
+    #     user = authenticate(
+    #         username=request.POST['username'], password=request.POST['password'])
+    # customer = Customer.objects.filter(user=user)
+    # print(customer)
+    # if customer:
+    #     dj_login(request, user)
+    #     return HttpResponseRedirect(reverse('bank_app:index'))
+    # elif user:
+    #     dj_login(request, user)
+    #     return HttpResponseRedirect(reverse('bank_app:employee'))
 
-#         # else:
-#         context = {
-#             'error': 'Bad username or password.'
-#         }
-#     return render(request, 'login_app/sign_up.html', context)
+    # else:
+    # context = {
+    #     'error': 'Bad username or password.'
+    # }
 
 
 @login_required
 def logout(request):
+    """redirect to sign up HTML on logout"""
     dj_logout(request)
     return render(request, 'login_app/sign_up.html')
 
 
 def sign_up(request):
+    """sign up user"""
     context = {}
     if request.method == "POST":
         password = request.POST['password']

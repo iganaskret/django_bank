@@ -1,33 +1,32 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Account, Ledger, Customer, ExternalLedger
-from django.contrib.auth.decorators import login_required
-from django.urls import reverse
-from django.http import HttpResponseRedirect, HttpResponse
-from django.contrib.auth.models import User
-from forex_python.converter import CurrencyRates
+"""bank_app web requests and web responses"""
 import uuid
 import json
-from django.http import Http404
-from django.http.response import JsonResponse
-from rest_framework.parsers import JSONParser
-from rest_framework import status
 import random
 import string
-from .serializers import ExternalLedgerSerializer, LedgerSerializer
-from rest_framework.decorators import api_view
 import requests
-from requests.auth import HTTPBasicAuth
-import io
-from django.http import FileResponse
-from reportlab.pdfgen import canvas
 
+from rest_framework.decorators import api_view
+from rest_framework import status
+
+from django.urls import reverse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib.auth.models import User
 from django.template.loader import get_template
+from django.http.response import JsonResponse
+
 from xhtml2pdf import pisa
+from forex_python.converter import CurrencyRates
+
+from .serializers import ExternalLedgerSerializer, LedgerSerializer
 from .utils import is_bank_employee
+from .models import Account, Ledger, Customer, ExternalLedger
 
 
 @login_required
 def index(request):
+    """return index HTML when user is logged in"""
     assert not is_bank_employee(
         request.user), 'Employee tries accessing customer view.'
     customers = Customer.objects.filter(user=request.user)
@@ -47,6 +46,7 @@ def index(request):
 
 @login_required
 def isEmployee(request):
+    """return two factor HTML when user is an employee"""
     if is_bank_employee(request.user):
         employee = True
     else:
@@ -61,6 +61,7 @@ def isEmployee(request):
 
 @login_required
 def conversion(request, account_id):
+    """return currency exchange HTML"""
     context = {
         'account_id': account_id
     }
@@ -68,8 +69,6 @@ def conversion(request, account_id):
         currency_from = request.POST['currency_from']
         currency_to = request.POST['currency_to']
         amount = float(request.POST['amount'])
-        account = Account.objects.filter(
-            pk=account_id).filter(account_type='BANK_ACCOUNT')
         c = CurrencyRates()
         conversion = c.convert(currency_from, currency_to, amount)
         context = {
@@ -86,6 +85,7 @@ def conversion(request, account_id):
 
 
 def employee(request):
+    """return employee HTML if is an employee"""
     assert is_bank_employee(
         request.user), 'Customer tries accessing employee view.'
     customers = Customer.objects.all()
@@ -98,6 +98,7 @@ def employee(request):
 
 
 def change_rank(request, customer_id):
+    """change customer rank if you are an employee"""
     assert is_bank_employee(
         request.user), 'Customer tries accessing employee view.'
     customer = get_object_or_404(Customer, pk=customer_id)
@@ -114,6 +115,7 @@ def change_rank(request, customer_id):
 
 
 def add_customer(request):
+    """add customer if you are an employee"""
     assert is_bank_employee(
         request.user), 'Customer tries accessing employee view.'
     context = {}
@@ -127,7 +129,11 @@ def add_customer(request):
         rank = request.POST['rank']
         username = request.POST['username']
         user = User.objects.create_user(
-            email=email, username=username, password=password, first_name=first_name, last_name=last_name)
+            email=email, username=username,
+            password=password,
+            first_name=first_name,
+            last_name=last_name
+        )
         if password == confirm_password:
             if Customer.objects.create(user=user, phone_number=phone, rank=rank):
                 return HttpResponseRedirect(reverse('bank_app:employee'))
@@ -143,10 +149,10 @@ def add_customer(request):
 
 
 def add_account_by_employee(request):
+    """add account if you are an employee"""
     assert is_bank_employee(
         request.user), 'Customer tries accessing employee view.'
     accounts = Account.objects.filter(user=request.user)
-    customers = Customer.objects.filter(user=request.user)
     context = {
         'accounts': accounts
     }
@@ -178,10 +184,10 @@ def add_account_by_employee(request):
 
 @login_required
 def add_account(request):
+    """add account if you are a customer"""
     assert not is_bank_employee(
         request.user), 'Employee tries accessing customer view.'
     accounts = Account.objects.filter(user=request.user)
-    customers = Customer.objects.filter(user=request.user)
     context = {
         'accounts': accounts
     }
@@ -214,6 +220,7 @@ def add_account(request):
 
 @login_required
 def movements(request, account_id):
+    """return movements if you are a customer"""
     assert not is_bank_employee(
         request.user), 'Employee tries accessing customer view.'
     movements = Ledger.objects.filter(account=account_id)
@@ -228,6 +235,7 @@ def movements(request, account_id):
 
 @login_required
 def take_loan(request, customer_id):
+    """take loan you are a customer"""
     assert not is_bank_employee(
         request.user), 'Employee tries accessing customer view.'
     accounts = Account.objects.filter(
@@ -260,6 +268,7 @@ def take_loan(request, customer_id):
 
 @login_required
 def pay_loan(request, customer_id, loan_id):
+    """pay loan you are a customer"""
     assert not is_bank_employee(
         request.user), 'Employee tries accessing customer view.'
     loan = get_object_or_404(Account, pk=loan_id)
@@ -276,8 +285,8 @@ def pay_loan(request, customer_id, loan_id):
         account = request.POST['account']
         amount = request.POST['amount']
         text = 'loan payment'
-        selectedAccount = get_object_or_404(Account, pk=account)
-        balance = selectedAccount.balance
+        selected_account = get_object_or_404(Account, pk=account)
+        balance = selected_account.balance
 
         if balance >= int(amount) and int(amount) <= -loan.balance:
             Ledger.transaction(int(amount), account, loan.pk, text)
@@ -305,6 +314,7 @@ def pay_loan(request, customer_id, loan_id):
 
 @login_required
 def transfers(request, account_id):
+    """transfer money you are a customer"""
     assert not is_bank_employee(
         request.user), 'Employee tries accessing customer view.'
     currentAccount = get_object_or_404(Account, pk=account_id)
@@ -337,6 +347,7 @@ def transfers(request, account_id):
 
 @login_required
 def external_transfers(request, account_id):
+    """external transfer money if you are a customer"""
     assert not is_bank_employee(
         request.user), 'Employee tries accessing customer view.'
 
@@ -384,8 +395,6 @@ def external_transfers(request, account_id):
 
             # Checking if the receiver account exist and getting the account id based on the number
             url = f'http://0.0.0.0:8003/accounts/profile/api/v1/accounts/{foreign_account}/'
-            my_headers = {
-                'Authorization': f'Token {key}'}
             r = requests.get(url, headers=my_headers)
             if r.status_code == 404:
                 context = {
@@ -415,7 +424,6 @@ def external_transfers(request, account_id):
                 'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload1)
             r2 = requests.post(
                 'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload2)
-
 
             # Saving in the Ledger and External Ledger in the local bank
             Ledger.transaction(int(amount), local_account, local_fa, text)
@@ -449,6 +457,7 @@ def external_transfers(request, account_id):
 
 @login_required
 def pdf(request, account_id):
+    """create pdf with ledger"""
     movements = Ledger.objects.filter(account=account_id)
 
     template_path = 'bank_app/movements_to_pdf.html'

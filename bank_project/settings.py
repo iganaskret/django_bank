@@ -90,6 +90,7 @@ MIDDLEWARE = [
     'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
     'middleware.middleware.CountRequestsMiddleware'
 ]
 
@@ -169,15 +170,6 @@ MEDIA_URL = '/media/'
 
 LOGIN_URL = 'two_factor:login'
 LOGIN_REDIRECT_URL = 'two_factor:profile'
-# REST_FRAMEWORK = {
-#    'DEFAULT_PERMISSION_CLASSES': [
-#       'bank_app.permissions.IsOwnerOrNoAccess',
-#       'rest_framework.permissions.IsAuthenticated',
-#    ],
-#    'DEFAULT_AUTHENTICATION_CLASSES': [
-#       'rest_framework.authentication.TokenAuthentication',
-#    ]
-# }
 
 
 REST_FRAMEWORK = {
@@ -189,17 +181,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ]
 }
-
-# Channels
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [("localhost", 6379)],
-#         },
-#     },
-# }
-# bank_project/settings.py
 
 # asgi
 ASGI_APPLICATION = "bank_project.asgi.application"

@@ -2,6 +2,7 @@
 from rest_framework import generics
 from .models import Account, Ledger, ExternalLedger
 from .serializers import AccountSerializer, LedgerSerializer, ExternalLedgerSerializer
+from .permissions import IsOwnerOrNoAccess
 
 
 class AccountList(generics.ListCreateAPIView):

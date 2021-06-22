@@ -91,7 +91,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'middleware.middleware.CountRequestsMiddleware'
+    'middleware.middleware.CheckUserLanguageMiddleware'
 ]
 
 ROOT_URLCONF = 'bank_project.urls'

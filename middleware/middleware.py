@@ -1,27 +1,23 @@
-# import the logging library
-import logging
-
-# Get an instance of a logger
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger()
-
-
-class CountRequestsMiddleware:
+# middleware/middleware.py
+class CheckUserLanguageMiddleware:
 
     def __init__(self, get_response):
         # One-time configuration and initialization.
         self.get_response = get_response
-        self.count_requests = 0
-        self.count_exceptions = 0
 
-    def __call__(self, request, *args, **kwargs):
+    def language(self, lang_info):
+        if "en" in lang_info:
+            print(f'user is using english')
+        elif "dk" in lang_info:
+            print(f'user is using danish')
+        else:
+            print(f'user is not using english')
+
+    def __call__(self, request):
         # Code to be executed for each request before
         # the view (and later middleware) are called
-        self.count_requests += 1
-        logger.info(f"Handled {self.count_requests} requests so far")
-        return self.get_response(request)
+        self.language(request.headers['Accept-Language'])
 
-    def process_exception(self, request, exception):
-        self.count_exceptions += 1
-        # Log an error message
-        logger.error(f"Encountered {self.count_exceptions} exceptions so far")
+        response = self.get_response(request)
+
+        return response

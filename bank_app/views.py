@@ -84,6 +84,7 @@ def conversion(request, account_id):
     return render(request, 'bank_app/conversion.html', context)
 
 
+@login_required
 def employee(request):
     """return employee HTML if is an employee"""
     assert is_bank_employee(
@@ -97,6 +98,7 @@ def employee(request):
     return render(request, 'bank_app/employee.html', context)
 
 
+@login_required
 def change_rank(request, customer_id):
     """change customer rank if you are an employee"""
     assert is_bank_employee(
@@ -114,6 +116,7 @@ def change_rank(request, customer_id):
     return render(request, 'bank_app/employee.html', context)
 
 
+@login_required
 def add_customer(request):
     """add customer if you are an employee"""
     assert is_bank_employee(
@@ -148,6 +151,7 @@ def add_customer(request):
     return render(request, 'bank_app/employee.html', context)
 
 
+@login_required
 def add_account_by_employee(request):
     """add account if you are an employee"""
     assert is_bank_employee(
@@ -224,8 +228,8 @@ def movements(request, account_id):
     assert not is_bank_employee(
         request.user), 'Employee tries accessing customer view.'
     movements = Ledger.objects.filter(account=account_id)
-    print(account_id)
-    print(movements)
+    # print(account_id)
+    # print(movements)
     context = {
         'movements': movements,
         "account_id": account_id

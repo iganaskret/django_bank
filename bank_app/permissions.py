@@ -7,7 +7,7 @@ class IsOwnerOrNoAccess(permissions.BasePermission):
     """permissions"""
 
     def has_object_permission(self, request, view, obj):
-        """check id user is an employee"""
+        """check if user is an owner / employee"""
         if is_bank_employee(request.user):
             return True
 

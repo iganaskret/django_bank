@@ -12,7 +12,6 @@ from . messaging import email_message
 def login(request):
     context = {}
     return render(request, 'login_app/sign_up.html', context)
-
     # if request.method == "POST":
     #     user = authenticate(
     #         username=request.POST['username'], password=request.POST['password'])

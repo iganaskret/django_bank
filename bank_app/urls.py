@@ -32,4 +32,5 @@ urlpatterns = [
          path('external_ledger/<int:pk>/', ExternalLedgerDetail.as_view()),
          path('rest-auth/', include('rest_auth.urls')),
          ])),
+
 ]

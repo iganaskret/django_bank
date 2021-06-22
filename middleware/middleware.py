@@ -12,11 +12,13 @@ class CheckUserLanguageMiddleware:
             print(f'user is using danish')
         else:
             print(f'user is not using english')
+        print(lang_info)
 
     def __call__(self, request):
         # Code to be executed for each request before
         # the view (and later middleware) are called
         self.language(request.headers['Accept-Language'])
+        # self.language("hi")
 
         response = self.get_response(request)
 

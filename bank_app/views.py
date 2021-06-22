@@ -5,6 +5,12 @@ import random
 import string
 import requests
 
+
+# from requests.auth import HTTPBasicAuth
+# import io
+# from django.http import FileResponse
+
+
 from rest_framework.decorators import api_view
 from rest_framework import status
 
@@ -395,7 +401,8 @@ def external_transfers(request, account_id):
             keystring = json.loads(r.text)
             key = keystring["key"]
             my_headers = {
-                'Authorization': f'Token {key}'}
+                'Authorization': f'Token {key}',
+                'Accept-Language': 'English'}
 
             # Checking if the receiver account exist and getting the account id based on the number
             url = f'http://0.0.0.0:8003/accounts/profile/api/v1/accounts/{foreign_account}/'

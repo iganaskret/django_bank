@@ -7,10 +7,9 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = ('__all__')
-        lookup_field = 'account_number'
+        #lookup_field = 'account_number'
         extra_kwargs = {
-            'url': {'lookup_field': 'account_number'}
-        }
+            'url': {'lookup_field': 'account_number'}}
         model = Account
 
 
@@ -18,7 +17,7 @@ class LedgerSerializer(serializers.ModelSerializer):
     """convert ledger object"""
     class Meta:
         model = Ledger
-        fields = ('account', 'amount', 'text', 'transaction_id')
+        fields = ('__all__')
 
 
 class ExternalLedgerSerializer(serializers.ModelSerializer):

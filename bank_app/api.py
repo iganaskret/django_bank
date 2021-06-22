@@ -1,7 +1,7 @@
 """api configuration"""
 from rest_framework import generics
-from .models import Account, Ledger, ExternalLedger
-from .serializers import AccountSerializer, LedgerSerializer, ExternalLedgerSerializer
+from .models import Account, Ledger, ExternalLedger, Customer
+from .serializers import AccountSerializer, LedgerSerializer, ExternalLedgerSerializer, CustomerSerializer
 from .permissions import IsOwnerOrNoAccess
 
 
@@ -40,3 +40,18 @@ class ExternalLedgerDetail(generics.RetrieveUpdateDestroyAPIView):
     """read-write-delete endpoints to represent external ledger instance"""
     queryset = ExternalLedger.objects.all()
     serializer_class = ExternalLedgerSerializer
+
+
+#
+class CustomerList(generics.ListCreateAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+
+    def get_queryset(self):
+        queryset = Customer.objects.filter(user=self.request.user)
+        return queryset
+
+
+class CustomerListDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer

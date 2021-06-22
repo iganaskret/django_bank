@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '^pvb@5(=4py)jdyoc7+bfyd+jaa@^z-e%2hg$=#d4uaceo=4hb'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['172.104.128.162',
                  '139.162.132.230', '127.0.0.1', '0.0.0.0', '*']
@@ -39,24 +39,24 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'bank_app',
     'login_app',
+
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+
     'django_rq',
-    # 'wkhtmltopdf',
-    # 'rest_framework.authtoken',
-    # 'rest_auth',
 
     # Two Factor Authenthication
     'django_otp',
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
     'two_factor',
-    'rest_framework.authtoken',
-    'rest_auth',
-    # 'djmoney',
-    # 'currencies',
+
     'notifier',
+
     # 3rd party apps
     'channels',
 ]

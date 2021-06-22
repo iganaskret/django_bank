@@ -30,7 +30,7 @@ class Customer(models.Model):
         return True
 
     def __str__(self):
-        return f"{self.user.first_name} - {self.user.id} - {self.rank}"
+        return f"name: {self.user.first_name} - id: {self.user.id} - rank: {self.rank}"
 
 
 class Account(models.Model):

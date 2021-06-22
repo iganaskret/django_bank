@@ -1,8 +1,8 @@
 """bank_app urlpatterns"""
 from django.urls import path, include
 from . import views
-from .api import AccountList, LedgerList, ExternalLedgerList
-from .api import AccountDetail, LedgerDetail, ExternalLedgerDetail
+from .api import AccountList, LedgerList, ExternalLedgerList, CustomerList
+from .api import AccountDetail, LedgerDetail, ExternalLedgerDetail, CustomerListDetail
 
 
 app_name = 'bank_app'
@@ -30,6 +30,10 @@ urlpatterns = [
          path('external_ledger/', ExternalLedgerList.as_view()),
          path('ledger/<int:pk>/', LedgerDetail.as_view()),
          path('external_ledger/<int:pk>/', ExternalLedgerDetail.as_view()),
+
+         path('customers/', CustomerList.as_view()),
+         path('customers/<int:pk>/', CustomerListDetail.as_view()),
+
          path('rest-auth/', include('rest_auth.urls')),
          ])),
 ]

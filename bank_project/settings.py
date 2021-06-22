@@ -41,7 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bank_app',
     'login_app',
+    'notifier',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth', ,
     'django_rq',
 
     # Two Factor Authenthication
@@ -49,9 +52,7 @@ INSTALLED_APPS = [
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
     'two_factor',
-    'rest_framework.authtoken',
-    'rest_auth',,
-    'notifier',
+
     # 3rd party apps
     'channels',
 ]

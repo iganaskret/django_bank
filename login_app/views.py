@@ -8,8 +8,8 @@ import django_rq
 from . messaging import email_message
 
 
-# def login(request):
-#     context = {}
+def login(request):
+    context = {}
 
 #     if request.method == "POST":
 #         user = authenticate(
@@ -27,7 +27,7 @@ from . messaging import email_message
 #         context = {
 #             'error': 'Bad username or password.'
 #         }
-#     return render(request, 'login_app/sign_up.html', context)
+    return render(request, 'login_app/sign_up.html', context)
 
 
 @login_required

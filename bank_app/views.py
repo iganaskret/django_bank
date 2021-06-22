@@ -19,7 +19,6 @@ import requests
 from requests.auth import HTTPBasicAuth
 import io
 from django.http import FileResponse
-from reportlab.pdfgen import canvas
 
 from django.template.loader import get_template
 from xhtml2pdf import pisa
@@ -415,7 +414,6 @@ def external_transfers(request, account_id):
                 'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload1)
             r2 = requests.post(
                 'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload2)
-
 
             # Saving in the Ledger and External Ledger in the local bank
             Ledger.transaction(int(amount), local_account, local_fa, text)

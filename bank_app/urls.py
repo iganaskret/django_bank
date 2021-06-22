@@ -22,7 +22,6 @@ urlpatterns = [
          views.external_transfers, name='external_transfers'),
     path('movements/<account_id>/', views.movements, name='movements'),
     path('pdf/<account_id>/', views.pdf, name='pdf'),
-    # path('api/v1/add5to/<int:pk>/', TBDNAME.as_view()),
     path('api/v1/accounts/', AccountList.as_view()),
     path('api/v1/accounts/<account_number>/', AccountDetail.as_view()),
     path('api/v1/ledger/', LedgerList.as_view()),
@@ -30,5 +29,4 @@ urlpatterns = [
     path('api/v1/ledger/<int:pk>/', LedgerDetail.as_view()),
     path('api/v1/external_ledger/<int:pk>/', ExternalLedgerDetail.as_view()),
     path('api/v1/rest-auth/', include('rest_auth.urls')),
-    #path('api-token-auth/', views.obtain_auth_token)
 ]

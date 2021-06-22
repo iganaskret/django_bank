@@ -8,12 +8,10 @@ import uuid
 
 
 class AccountSerializer(serializers.ModelSerializer):
-    #id = serializers.ReadOnlyField()
-
     class Meta:
         fields = ('__all__')
-        lookup_field = 'account_number'
-        extra_kwargs = {  # "pk": {"read_only": False},
+        #lookup_field = 'account_number'
+        extra_kwargs = {
             'url': {'lookup_field': 'account_number'}}
         model = Account
 
@@ -22,8 +20,9 @@ class LedgerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ledger
-        fields = ('account', 'amount', 'text', 'transaction_id')
-        #extra_kwargs = {"pk": {"read_only": False}}
+        fields = ('__all__')
+        # extra_kwargs = {
+        #     'url': {'lookup_field': 'account_number'}}
 
 
 class ExternalLedgerSerializer(serializers.ModelSerializer):

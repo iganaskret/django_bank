@@ -43,9 +43,6 @@ INSTALLED_APPS = [
     'login_app',
     'rest_framework',
     'django_rq',
-    # 'wkhtmltopdf',
-    # 'rest_framework.authtoken',
-    # 'rest_auth',
 
     # Two Factor Authenthication
     'django_otp',
@@ -53,9 +50,7 @@ INSTALLED_APPS = [
     'django_otp.plugins.otp_totp',
     'two_factor',
     'rest_framework.authtoken',
-    'rest_auth',
-    # 'djmoney',
-    # 'currencies',
+    'rest_auth',,
     'notifier',
     # 3rd party apps
     'channels',

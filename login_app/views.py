@@ -9,25 +9,25 @@ import django_rq
 from . messaging import email_message
 
 
-def login(request):
-    context = {}
-    return render(request, 'login_app/sign_up.html', context)
-    # if request.method == "POST":
-    #     user = authenticate(
-    #         username=request.POST['username'], password=request.POST['password'])
-    # customer = Customer.objects.filter(user=user)
-    # print(customer)
-    # if customer:
-    #     dj_login(request, user)
-    #     return HttpResponseRedirect(reverse('bank_app:index'))
-    # elif user:
-    #     dj_login(request, user)
-    #     return HttpResponseRedirect(reverse('bank_app:employee'))
+# def login(request):
+#     context = {}
+#     return render(request, 'login_app/sign_up.html', context)
+# if request.method == "POST":
+#     user = authenticate(
+#         username=request.POST['username'], password=request.POST['password'])
+# customer = Customer.objects.filter(user=user)
+# print(customer)
+# if customer:
+#     dj_login(request, user)
+#     return HttpResponseRedirect(reverse('bank_app:index'))
+# elif user:
+#     dj_login(request, user)
+#     return HttpResponseRedirect(reverse('bank_app:employee'))
 
-    # else:
-    # context = {
-    #     'error': 'Bad username or password.'
-    # }
+# else:
+# context = {
+#     'error': 'Bad username or password.'
+# }
 
 
 @login_required
@@ -68,7 +68,7 @@ def sign_up(request):
                     'username': username,
                     'password': password,
                 })
-                return HttpResponseRedirect(reverse('login_app:login'))
+                return HttpResponseRedirect(reverse('two_factor:login'))
 
             else:
                 context = {

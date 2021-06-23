@@ -389,8 +389,10 @@ def external_transfers(request, account_id):
 
             # Obtaining the Authentification Token
             url = 'http://0.0.0.0:8003/accounts/profile/api/v1/rest-auth/login/'
-            pload = {"username": "external_transfers",
-                     "password": 'external123'}
+            pload = {
+                "username": "external_transfers",
+                "password": 'external123'
+            }
             r = requests.post(url, data=pload)
             keystring = json.loads(r.text)
             key = keystring["key"]
@@ -412,18 +414,31 @@ def external_transfers(request, account_id):
             foreign_account_id = account_obj["id"]
 
             # Saving in the External Ledger of the foreign bank
-            pload = {"localAccount": foreign_fa, "foreignAccount": local_fa_num,
-                     "amount": amount, "text": text, "comments": f"to local account with number {foreign_account}"}
+            pload = {
+                "localAccount": foreign_fa,
+                "foreignAccount": local_fa_num,
+                "amount": amount,
+                "text": text,
+                "comments": f"to local account with number {foreign_account}"
+            }
             r = requests.post(
                 'http://0.0.0.0:8003/accounts/profile/api/v1/external_ledger/', headers=my_headers, data=pload)
             print(r.text)
 
             # Saving in the Ledger of the foreign bank
-            pload1 = {"account": foreign_account_id,
-                      "amount": amount, "text": text, "transaction_id": transaction_id}
+            pload1 = {
+                "account": foreign_account_id,
+                "amount": amount,
+                "text": text,
+                "transaction_id": transaction_id
+            }
             # "account": the id of the FOREIGN ACC in the other bank
-            pload2 = {"account": 1,
-                      "amount": -int(amount), "text": text, "transaction_id": transaction_id}
+            pload2 = {
+                "account": 1,
+                "amount": -int(amount),
+                "text": text,
+                "transaction_id": transaction_id
+            }
             r1 = requests.post(
                 'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload1)
             r2 = requests.post(

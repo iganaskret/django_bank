@@ -22,7 +22,6 @@ urlpatterns = [
          views.external_transfers, name='external_transfers'),
     path('movements/<account_id>/', views.movements, name='movements'),
     path('pdf/<account_id>/', views.pdf, name='pdf'),
-
     path('api/v1/', include([
          path('accounts/', AccountList.as_view()),
          path('accounts/<account_number>/', AccountDetail.as_view()),

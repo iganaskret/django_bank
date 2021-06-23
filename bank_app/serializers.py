@@ -31,7 +31,6 @@ class ExternalLedgerSerializer(serializers.ModelSerializer):
 class CustomerSerializer(serializers.ModelSerializer):
     """convert customer object"""
     #first_name = serializers.CharField(source='Customer.first_name')
-
     class Meta:
         model = Customer
         fields = ('__all__')

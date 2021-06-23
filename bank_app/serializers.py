@@ -4,7 +4,7 @@ from .models import Account, Ledger, ExternalLedger
 
 
 class AccountSerializer(serializers.ModelSerializer):
-
+    """create serializer for Account model"""
     class Meta:
         fields = ('__all__')
         #lookup_field = 'account_number'
@@ -14,14 +14,14 @@ class AccountSerializer(serializers.ModelSerializer):
 
 
 class LedgerSerializer(serializers.ModelSerializer):
-    """convert ledger object"""
+    """create serializer for Ledger model"""
     class Meta:
         model = Ledger
         fields = ('__all__')
 
 
 class ExternalLedgerSerializer(serializers.ModelSerializer):
-    """convert external ledger object"""
+    """create serializer for External Ledger model"""
     class Meta:
         model = ExternalLedger
         fields = ('__all__')

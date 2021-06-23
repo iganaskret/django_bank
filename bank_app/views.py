@@ -372,7 +372,8 @@ def external_transfers(request, account_id):
         local_account = request.POST['fromAccount']
         foreign_account = request.POST['toAccount']
         local_fa = 1
-        foreign_fa = request.POST['toForeignBankAccount']
+        foreign_fa = 1
+        foreign_fa_num = request.POST['toForeignBankAccount']
         amount = request.POST['amount']
         text = request.POST['text']
         acc_balance = currentAccount.balance
@@ -388,7 +389,7 @@ def external_transfers(request, account_id):
             local_fa_obj = get_object_or_404(Account, pk=local_fa)
             local_fa_num = local_fa_obj.account_number
             externalLedger.localAccount = local_fa_obj
-            externalLedger.foreignAccount = foreign_fa
+            externalLedger.foreignAccount = foreign_fa_num
             externalLedger.amount = -int(amount)
             externalLedger.text = text
             externalLedger.comments = f"from local account with number {local_account_num}"
@@ -397,7 +398,9 @@ def external_transfers(request, account_id):
             url = 'http://0.0.0.0:8003/accounts/profile/api/v1/rest-auth/login/'
             pload = {"username": "external_transfers",
                      "password": 'external123'}
-            r = requests.post(url, data=pload)
+            my_headers = {
+                'Accept-Language': 'English'}
+            r = requests.post(url, data=pload, headers=my_headers)
             keystring = json.loads(r.text)
             key = keystring["key"]
             my_headers = {

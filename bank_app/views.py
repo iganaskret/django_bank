@@ -353,7 +353,15 @@ def transfers(request, account_id):
         to_account = request.POST['toAccount']
         text = request.POST['text']
         acc_balance = currentAccount.balance
-        # acc_balance = 1000
+        # not allowing negative amounts in transfer
+        if int(amount) <= 0:
+            context = {
+                'currentAccount': currentAccount,
+                'allAccounts': allAccounts,
+                'error': 'the amount must be higher than 0'
+            }
+            return render(request, 'bank_app/transfers.html', context)
+
         if acc_balance >= int(amount):
             Ledger.transaction(int(amount), from_account, to_account, text)
             return redirect('bank_app:index')
@@ -393,6 +401,15 @@ def external_transfers(request, account_id):
 
         local_account_obj = get_object_or_404(Account, pk=local_account)
         local_account_num = local_account_obj.account_number
+
+        # not allowing negative amounts in transfer
+        if int(amount) <= 0:
+            context = {
+                'currentAccount': currentAccount,
+                'allAccounts': allAccounts,
+                'external_error': 'the amount must be higher than 0'
+            }
+            return render(request, 'bank_app/transfers.html', context)
 
         # Checking if there are sufficient funds in the account
         if acc_balance >= int(amount):
@@ -468,8 +485,9 @@ def external_transfers(request, account_id):
                 f'http://{bankB}/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload2)
 
             # Saving in the Ledger and External Ledger in the local bank
-            Ledger.transaction(int(amount), local_account, local_fa, text)
-            externalLedger.save()
+            if r1.status_code == 201 & r2.status_code == 201 & r.status_code == 201:
+                Ledger.transaction(int(amount), local_account, local_fa, text)
+                externalLedger.save()
             return redirect('bank_app:index')
         else:
             context = {

@@ -6,7 +6,9 @@
     <input type="text" name="fromAccount" id="fromAccount" placeholder="from" value={{ currentAccount.pk }}>
     <select name="toAccount" id="toAccount">
         {% for account in allAccounts %}
-        <option value={{ account.pk }}> {{ account.pk }} - {{ account.type }}</option>
+        {% if account.account_type == "BANK_ACCOUNT" %}
+        <option value={{ account.name }}> {{ account.name }} - {{ account.account_number }}</option>
+        {% endif %} 
         {% endfor %}
     </select>
     <input type="number" name="amount" id="amount" placeholder="amount">

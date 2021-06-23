@@ -255,6 +255,18 @@ def take_loan(request, customer_id):
         'accounts': accounts,
         'customer': customer
     }
+
+    def create_unique_id():
+        return ''.join(random.choices(string.digits, k=9))
+
+    random_loan_number = create_unique_id()
+    unique = False
+    while not unique:
+        if not Account.objects.filter(account_number=random_loan_number):
+            unique = True
+        else:
+            random_loan_number = create_unique_id()
+
     if request.method == 'POST':
         account_type = request.POST['account_type']
         loan_name = request.POST['loan_name']
@@ -262,7 +274,7 @@ def take_loan(request, customer_id):
         account = Account()
         account.user = request.user
         account.name = loan_name
-        account.account_number = "12345678"
+        account.account_number = "1" + random_loan_number
         account.account_type = account_type
         account.save()
         loan_amount = request.POST['loan_amount']
@@ -398,7 +410,7 @@ def external_transfers(request, account_id):
             bankB = '0.0.0.0:8003'
 
             # Obtaining the Authentification Token
-            url = "http://" + bankB + "/accounts/profile/api/v1/rest-auth/login/"
+            url = f'http://{bankB}/accounts/profile/api/v1/rest-auth/login/'
             pload = {"username": "external_transfers",
                      "password": 'external123'}
             my_headers = {

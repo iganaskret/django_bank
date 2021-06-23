@@ -168,7 +168,7 @@ def add_account_by_employee(request):
     }
 
     def create_unique_id():
-        return '1'.join(random.choices(string.digits, k=9))
+        return ''.join(random.choices(string.digits, k=9))
 
     random_acc_number = create_unique_id()
     unique = False
@@ -184,7 +184,7 @@ def add_account_by_employee(request):
         account.user = request.user
         account.name = account_name
         #account.account_number = "12345678"
-        account.account_number = random_acc_number
+        account.account_number = "1" + random_acc_number
         account.account_type = account_type
         account.save()
 
@@ -394,8 +394,11 @@ def external_transfers(request, account_id):
             externalLedger.text = text
             externalLedger.comments = f"from local account with number {local_account_num}"
 
+            # Bank B host
+            bankB = '0.0.0.0:8003'
+
             # Obtaining the Authentification Token
-            url = 'http://0.0.0.0:8003/accounts/profile/api/v1/rest-auth/login/'
+            url = "http://" + bankB + "/accounts/profile/api/v1/rest-auth/login/"
             pload = {"username": "external_transfers",
                      "password": 'external123'}
             my_headers = {
@@ -408,7 +411,7 @@ def external_transfers(request, account_id):
                 'Accept-Language': 'English'}
 
             # Checking if the receiver account exist and getting the account id based on the number
-            url = f'http://0.0.0.0:8003/accounts/profile/api/v1/accounts/{foreign_account}/'
+            url = f'http://{bankB}/accounts/profile/api/v1/accounts/{foreign_account}/'
             r = requests.get(url, headers=my_headers)
             if r.status_code == 404:
                 context = {
@@ -422,22 +425,35 @@ def external_transfers(request, account_id):
             foreign_account_id = account_obj["id"]
 
             # Saving in the External Ledger of the foreign bank
-            pload = {"localAccount": foreign_fa, "foreignAccount": local_fa_num,
-                     "amount": amount, "text": text, "comments": f"to local account with number {foreign_account}"}
+            pload = {
+                "localAccount": foreign_fa,
+                "foreignAccount": local_fa_num,
+                "amount": amount,
+                "text": text,
+                "comments": f"to local account with number {foreign_account}"
+            }
             r = requests.post(
-                'http://0.0.0.0:8003/accounts/profile/api/v1/external_ledger/', headers=my_headers, data=pload)
+                f'http://{bankB}/accounts/profile/api/v1/external_ledger/', headers=my_headers, data=pload)
             print(r.text)
 
             # Saving in the Ledger of the foreign bank
-            pload1 = {"account": foreign_account_id,
-                      "amount": amount, "text": text, "transaction_id": transaction_id}
+            pload1 = {
+                "account": foreign_account_id,
+                "amount": amount,
+                "text": text,
+                "transaction_id": transaction_id
+            }
             # "account": the id of the FOREIGN ACC in the other bank
-            pload2 = {"account": 1,
-                      "amount": -int(amount), "text": text, "transaction_id": transaction_id}
+            pload2 = {
+                "account": 1,
+                "amount": -int(amount),
+                "text": text,
+                "transaction_id": transaction_id
+            }
             r1 = requests.post(
-                'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload1)
+                f'http://{bankB}/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload1)
             r2 = requests.post(
-                'http://0.0.0.0:8003/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload2)
+                f'http://{bankB}/accounts/profile/api/v1/ledger/', headers=my_headers, data=pload2)
 
             # Saving in the Ledger and External Ledger in the local bank
             Ledger.transaction(int(amount), local_account, local_fa, text)

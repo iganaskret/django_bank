@@ -30,7 +30,7 @@ class Customer(models.Model):
         return True
 
     def __str__(self):
-        return f"{self.user.first_name} - {self.user.id} - {self.rank}"
+        return f"username: {self.user.username} - id: {self.user.id} - rank: {self.rank}"
 
 
 class Account(models.Model):
@@ -72,7 +72,7 @@ class Account(models.Model):
         return balance + external_balance
 
     def __str__(self):
-        return f"{self.name} - {self.id} - {self.user.id} - {self.balance}"
+        return f"account id: {self.id} - name: {self.name} - owner: {self.user} - balance: {self.balance}"
 
 
 class Ledger(models.Model):
@@ -85,7 +85,7 @@ class Ledger(models.Model):
     transaction_id = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"{self.account.id} - {self.amount} -  {self.text} - {self.transaction_id}"
+        return f"account id: {self.account.id} - owner: {self.account.user} - amount: {self.amount} - text: {self.text} - transaction id: {self.transaction_id}"
 
     @classmethod
     @transaction.atomic
@@ -115,4 +115,4 @@ class ExternalLedger(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.localAccount.name} - {self.foreignAccount} -  {self.amount} -  {self.text}"
+        return f"local account name: {self.localAccount.name} - foreign account number: {self.foreignAccount} - amount: {self.amount} -  text: {self.text}"

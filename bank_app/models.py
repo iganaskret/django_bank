@@ -76,13 +76,12 @@ class Account(models.Model):
 
 
 class Ledger(models.Model):
-    """function - sum of the ledger"""
+    """ledger fields"""
     account = models.ForeignKey(
         'Account', on_delete=models.CASCADE, related_name="ledger")
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     text = models.CharField(max_length=20)
     date_created = models.DateTimeField(auto_now_add=True)
-    #transaction_id = models.CharField(max_length=100, blank=True)
     transaction_id = models.CharField(max_length=100)
 
     def __str__(self):
@@ -106,7 +105,7 @@ class Ledger(models.Model):
 
 
 class ExternalLedger(models.Model):
-    """function - sum of the external ledger"""
+    """external ledger fields"""
     localAccount = models.ForeignKey(
         'Account', on_delete=models.CASCADE, related_name="external_ledger")
     foreignAccount = models.CharField(max_length=100, blank=False)

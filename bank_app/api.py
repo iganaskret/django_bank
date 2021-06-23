@@ -8,7 +8,7 @@ from .permissions import IsOwnerOrNoAccess
 
 class AccountList(generics.ListCreateAPIView):
     """collection of account instances"""
-    queryset = Account.objects.all()
+    #queryset = Account.objects.all()
     serializer_class = AccountSerializer
 
     def get_queryset(self):
@@ -29,7 +29,7 @@ class AccountDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class LedgerList(generics.ListCreateAPIView):
     """collection of ledger instances"""
-    queryset = Ledger.objects.all()
+    #queryset = Ledger.objects.all()
     serializer_class = LedgerSerializer
 
     def get_queryset(self):
@@ -40,7 +40,7 @@ class LedgerList(generics.ListCreateAPIView):
 
 class ExternalLedgerList(generics.ListCreateAPIView):
     """collection of external ledger instances"""
-    queryset = ExternalLedger.objects.all()
+    #queryset = ExternalLedger.objects.all()
     serializer_class = ExternalLedgerSerializer
 
     def get_queryset(self):

@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'notifier',
     'rest_framework',
     'rest_framework.authtoken',
-    'rest_auth', ,
+    'rest_auth',
     'django_rq',
 
     # Two Factor Authenthication

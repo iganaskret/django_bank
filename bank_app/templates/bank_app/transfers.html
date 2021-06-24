@@ -7,7 +7,7 @@
     <select name="toAccount" id="toAccount">
         {% for account in allAccounts %}
         {% if account.account_type == "BANK_ACCOUNT" %}
-        <option value={{ account.name }}> {{ account.name }} - {{ account.account_number }}</option>
+        <option value={{ account.id }}> {{ account.name }} - {{ account.account_number }}</option>
         {% endif %} 
         {% endfor %}
     </select>
